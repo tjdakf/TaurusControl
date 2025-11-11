@@ -1,0 +1,14 @@
+{
+  "name":"TestProgram",
+  "width":1920,
+  "height":1080,
+  "tplID":1,
+  "winInfo":{
+    "height":100,
+    "width":100,
+    "left":0,
+    "top":0,
+    "zindex":0,
+    "index":0
+  }
+}

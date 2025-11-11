@@ -1,0 +1,18 @@
+{
+  "sn": "",
+  "iconPath": "",
+  "iconName": "",
+  "sendProgramFilePaths":
+  {
+    "programPath": "C:\\Users\\tjdak\\Downloads\\TaurusControl\\program1",
+    "mediasPath":
+    {
+      "./resources/1.jpg": "1.jpg",
+      "./resources/2.jpg": "2.jpg"
+    }
+  },
+  "programName": "program1",
+  "deviceIdentifier": "TestProgram",
+  "startPlayAfterTransferred": true,
+  "insertPlay": true
+}

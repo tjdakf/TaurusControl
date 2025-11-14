@@ -14,6 +14,6 @@ public class Terminal {
         this.width = data.getInt("width");
         this.height = data.getInt("height");
         this.logined = data.getBoolean("logined");
-        this.hasPassword = data.getBoolean("hasPassword");
+        this.hasPassword = data.getBoolean("hasPassWord");
     }
 }

@@ -6,5 +6,7 @@ public class MainTest {
         TerminalManager terminalManager = new TerminalManager();
         terminalManager.searchTerminal(sdkManager);
         System.out.println("터미널 검색 완료");
+
+        System.out.println(terminalManager.getTerminalCount());
     }
 }

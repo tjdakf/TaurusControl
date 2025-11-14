@@ -19,4 +19,8 @@ public class TerminalManager {
         sdk.getViplexCore().nvSearchTerminalAsync(callBack);
         Thread.sleep(3000);
     }
+
+    public int getTerminalCount() {
+        return terminals.size();
+    }
 }

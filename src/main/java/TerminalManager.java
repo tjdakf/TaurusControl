@@ -1,6 +1,7 @@
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TerminalManager {
@@ -20,7 +21,18 @@ public class TerminalManager {
         Thread.sleep(3000);
     }
 
+    public void addTerminal(Terminal terminal) {
+        terminals.add(terminal);
+    }
+
     public int getTerminalCount() {
         return terminals.size();
+    }
+
+    public List<Terminal> getTerminals() {
+        return terminals.stream()
+                .sorted(Comparator
+                        .comparing(Terminal::isLogined).reversed())
+                .toList();
     }
 }

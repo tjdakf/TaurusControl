@@ -16,4 +16,8 @@ public class Terminal {
         this.logined = data.getBoolean("logined");
         this.hasPassword = data.getBoolean("hasPassWord");
     }
+
+    public boolean isLogined() {
+        return logined;
+    }
 }

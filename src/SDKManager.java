@@ -27,4 +27,8 @@ public class SDKManager {
             throw new RuntimeException("SDK 초기화 실패");
         }
     }
+
+    public ViplexCore getViplexCore() {
+        return viplexCore;
+    }
 }

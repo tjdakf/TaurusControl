@@ -1,8 +1,19 @@
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MediaManager {
     private static final List<String> VALID_EXTENSIONS = List.of("mp4", "avi", "jpg", "png", "gif");
+    private List<Media> medias = new ArrayList<>();
+    private String md5;
+
+    public void addMedia(SDKManager sdk, String path) {
+        validateMedia(path);
+        String md5 = calculateMD5(sdk,  path);
+        medias.add(new Media(path, md5));
+    }
 
     public void validateMedia(String path) {
         validatePath(path);
@@ -21,5 +32,21 @@ public class MediaManager {
         if (!VALID_EXTENSIONS.contains(extension.toLowerCase())) {
             throw new IllegalArgumentException("지원하지 않는 파일 형식입니다: " + extension);
         }
+    }
+
+    private String calculateMD5(SDKManager sdk, String path) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            md5 = data;
+
+            AsyncHelper.setApiReturn(true);
+        };
+
+        JSONObject obj = new JSONObject();
+        obj.put("filePath", path);
+
+        sdk.getViplexCore().nvGetFileMD5Async(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+
+        return md5;
     }
 }

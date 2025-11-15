@@ -29,6 +29,14 @@ public class Terminal {
         return sn;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void setLogined(boolean logined) {
         this.logined = logined;
     }

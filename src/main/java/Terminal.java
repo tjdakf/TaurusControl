@@ -20,4 +20,8 @@ public class Terminal {
     public boolean isLogined() {
         return logined;
     }
+
+    public String getAliasName() {
+        return aliasName;
+    }
 }

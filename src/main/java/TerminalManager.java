@@ -32,7 +32,8 @@ public class TerminalManager {
     public List<Terminal> getTerminals() {
         return terminals.stream()
                 .sorted(Comparator
-                        .comparing(Terminal::isLogined).reversed())
+                        .comparing(Terminal::isLogined).reversed()
+                        .thenComparing(Terminal::getAliasName))
                 .toList();
     }
 }

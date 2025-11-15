@@ -9,6 +9,8 @@ public class TerminalManager {
     private Exception callbackException = null;
 
     public void searchTerminal(SDKManager sdk) throws InterruptedException {
+        terminals.clear();
+
         ViplexCore.CallBack callBack = (code, data) -> {
             if (code != 0) {
                 throw new IllegalStateException("data: " + data);

@@ -24,4 +24,12 @@ public class Terminal {
     public String getAliasName() {
         return aliasName;
     }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setLogined(boolean logined) {
+        this.logined = logined;
+    }
 }

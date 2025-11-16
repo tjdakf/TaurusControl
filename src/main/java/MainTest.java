@@ -29,5 +29,9 @@ public class MainTest {
 
         System.out.println("프로그램 로컬 저장 ./temp/program/");
         programManager.saveProgramToLocal(sdkManager);
+
+        System.out.println("프로그램 전송");
+        programManager.publishProgram(sdkManager, firstTerminal, mediaManager);
+        Thread.sleep(3000);
     }
 }

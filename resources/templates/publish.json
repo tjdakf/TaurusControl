@@ -1,0 +1,14 @@
+{
+  "sn": "",
+  "iconPath": "",
+  "iconName": "",
+  "sendProgramFilePaths": {
+    "programPath": "",
+    "mediasPath": {
+    }
+  },
+  "programName": "program1",
+  "deviceIdentifier": "program1",
+  "startPlayAfterTransferred": true,
+  "insertPlay": true
+}

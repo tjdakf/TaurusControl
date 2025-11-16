@@ -43,6 +43,38 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
+    public void publishProgram(SDKManager sdk, Terminal terminal, MediaManager mediaManager) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code == 65362) {
+                    JSONObject obj = new JSONObject(data);
+                    System.out.printf("프로그램 전송 진행률: %d%%\n",
+                            (obj.getLong("m_curBytes") * 100) / obj.getLong("m_totalBytes"));
+                    return;
+                }
+
+                if (code == 0) {
+                    System.out.println("프로그램 전송 완료");
+                    return;
+                }
+
+                // 나머지 코드 예외 처리
+                throw new RuntimeException(code + ": " + data);
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("publish.json");
+        obj.put("sn", terminal.getSn());
+        JSONObject filePaths = obj.getJSONObject("sendProgramFilePaths");
+        filePaths.put("programPath", System.getProperty("user.dir") + "/temp/program/program1");
+        filePaths.put("mediasPath", mediaManager.buildMediasPath());
+
+        sdk.getViplexCore().nvStartTransferProgramAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+
     public int findOrCreateProgramId(SDKManager sdk, Terminal terminal) {
         findProgramId(sdk, terminal);
 

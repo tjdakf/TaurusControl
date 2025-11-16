@@ -29,4 +29,16 @@ public class Media {
         int nameEndIndex = path.lastIndexOf(".");
         return path.substring(nameStartIndex + 1, nameEndIndex);
     }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
 }

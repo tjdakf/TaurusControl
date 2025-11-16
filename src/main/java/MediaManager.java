@@ -36,6 +36,15 @@ public class MediaManager {
         return obj;
     }
 
+    public JSONObject buildMediasPath() {
+        JSONObject obj = new JSONObject();
+        for (Media media : medias) {
+            obj.put(media.getPath(), media.getFileName() + media.getExtension());
+        }
+
+        return obj;
+    }
+
     private void validatePath(String path) {
         File file = new File(path);
         if (!file.isFile()) {

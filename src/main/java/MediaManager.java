@@ -1,3 +1,4 @@
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -18,6 +19,22 @@ public class MediaManager {
     public void validateMedia(String path) {
         validatePath(path);
         validateExtension(path);
+    }
+
+    public JSONObject buildWidgetContainers() {
+        JSONObject obj = TemplateLoader.load("widgetcontainers.json");
+
+        for (int i = 0; i < medias.size(); i++) {
+            JSONObject widget = medias.get(i).toJSON();
+            widget.put("id", i + 1);
+            obj.getJSONArray("widgetContainers")
+                    .getJSONObject(0)
+                    .getJSONObject("contents")
+                    .getJSONArray("widgets")
+                    .put(widget);
+        }
+
+        return obj;
     }
 
     private void validatePath(String path) {

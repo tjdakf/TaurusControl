@@ -16,9 +16,9 @@ public class ProgramManager {
     }
 
     private void findProgramId(SDKManager sdk, Terminal terminal) {
-        ViplexCore.CallBack callBack = (code, data) -> {
-            programId = 0;
+        programId = 0;
 
+        ViplexCore.CallBack callBack = (code, data) -> {
             JSONObject obj = new JSONObject(data);
             JSONArray programList = obj.getJSONArray("programList");
 

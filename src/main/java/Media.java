@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 public class Media {
     private String path;
     private String md5;
@@ -11,6 +13,15 @@ public class Media {
         this.fileName = extractFileName();
         this.extension = path.substring(path.lastIndexOf("."));
         this.mediaType = MediaType.from(extension);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject media = TemplateLoader.load("widget.json");
+        media.put("originalDataSource", path);
+        media.put("dataSource", md5 + extension);
+        media.put("name", fileName + extension);
+        media.put("type", mediaType.name());
+        return media;
     }
 
     private String extractFileName() {

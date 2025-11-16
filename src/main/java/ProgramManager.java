@@ -24,6 +24,25 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
+    public void saveProgramToLocal(SDKManager sdk) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("save-program.json");
+        obj.put("programID", programId);
+        obj.put("outPutPath", "temp/program");
+
+        sdk.getViplexCore().nvMakeProgramAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+
     public int findOrCreateProgramId(SDKManager sdk, Terminal terminal) {
         findProgramId(sdk, terminal);
 

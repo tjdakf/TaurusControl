@@ -10,12 +10,24 @@ public class MainTest {
 
         System.out.println("검색된 터미널 개수: " + terminalManager.getTerminalCount());
 
+        Terminal firstTerminal = terminalManager.getTerminals().getFirst();
         System.out.println("첫 번째 터미널 로그인 시도");
-        String sn = terminalManager.getTerminals().getFirst().getSn();
+        String sn = firstTerminal.getSn();
         terminalManager.loginTerminal(sdkManager, sn, "SN2008@+");
-        System.out.println("로그인 상태: " + terminalManager.getTerminals().getFirst().isLogined());
+        System.out.println("로그인 상태: " + firstTerminal.isLogined());
 
         ProgramManager programManager = new ProgramManager();
-        System.out.println("프로그램ID 반환: " + programManager.findOrCreateProgramId(sdkManager, terminalManager.getTerminals().getFirst()));
+        System.out.println("프로그램ID 반환: " + programManager.findOrCreateProgramId(sdkManager, firstTerminal));
+
+        System.out.println("미디어 파일 추가");
+        MediaManager mediaManager = new MediaManager();
+        String mediaPath1 = "resources/media/1.jpg";
+        mediaManager.addMedia(sdkManager, mediaPath1);
+
+        System.out.println("프로그램 수정");
+        programManager.editProgram(sdkManager, mediaManager);
+
+        System.out.println("프로그램 로컬 저장 ./temp/program/");
+        programManager.saveProgramToLocal(sdkManager);
     }
 }

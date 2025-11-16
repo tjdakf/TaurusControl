@@ -5,6 +5,25 @@ public class ProgramManager {
     private int programId;
     private Exception callbackException = null;
 
+    public void editProgram(SDKManager sdk, MediaManager mediaManager) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("edit-program.json");
+        obj.put("programID", programId);
+        obj.put("pageInfo", mediaManager.buildWidgetContainers());
+
+        sdk.getViplexCore().nvSetPageProgramAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+
     public int findOrCreateProgramId(SDKManager sdk, Terminal terminal) {
         findProgramId(sdk, terminal);
 

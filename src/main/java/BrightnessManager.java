@@ -22,4 +22,23 @@ public class BrightnessManager {
         sdk.getViplexCore().nvGetScreenBrightnessAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
     }
+
+    public void setLedBrightness(SDKManager sdk, Terminal terminal, float brightness) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException("밝기 설정 실패");
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("set-brightness.json");
+        obj.put("sn", terminal.getSn());
+        obj.getJSONObject("screenBrightnessInfo").put("ratio", brightness);
+
+        sdk.getViplexCore().nvSetScreenBrightnessAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
 }

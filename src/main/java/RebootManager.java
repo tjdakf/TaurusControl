@@ -2,7 +2,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.DayOfWeek;
-import java.time.temporal.ChronoField;
 
 public class RebootManager {
     public void searchRebootTask(SDKManager sdk, Terminal terminal) {
@@ -38,6 +37,29 @@ public class RebootManager {
         obj.put("sn", terminal.getSn());
 
         sdk.getViplexCore().nvGetReBootTaskAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+
+    public void setRebootTask(SDKManager sdk, Terminal terminal, String cron) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("set-reboot.json");
+        obj.put("sn", terminal.getSn());
+        obj.getJSONObject("taskInfo")
+                .getJSONArray("conditions")
+                .getJSONObject(0)
+                .getJSONArray("cron")
+                .put(cron);
+
+        sdk.getViplexCore().nvSetReBootTaskAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
     }
 

@@ -1,0 +1,19 @@
+{
+  "sn": "",
+  "taskInfo": {
+    "type": "REBOOT",
+    "source": {
+      "type": 0,
+      "platform": 1
+    },
+    "executionType": "BY_CONDITIONS",
+    "reason": "Just to test",
+    "conditions": [
+      {
+        "cron": [
+        ],
+        "enable": true
+      }
+    ]
+  }
+}

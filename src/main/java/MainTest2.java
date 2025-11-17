@@ -20,8 +20,11 @@ public class MainTest2 {
         TerminalTimeManager terminalTimeManager = new TerminalTimeManager();
         terminalTimeManager.setCurrentTime(sdkManager, firstTerminal);
 
-        System.out.println("reboot 스케쥴 조회");
+        System.out.println("reboot 스케쥴 설정");
         RebootManager rebootManager = new RebootManager();
+        rebootManager.setRebootTask(sdkManager, firstTerminal, "0 0 6 ? * 1");
+
+        System.out.println("reboot 스케쥴 조회");
         rebootManager.searchRebootTask(sdkManager, firstTerminal);
     }
 }

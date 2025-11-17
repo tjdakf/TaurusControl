@@ -16,7 +16,12 @@ public class MainTest2 {
         terminalManager.loginTerminal(sdkManager, sn, "SN2008@+");
         System.out.println("로그인 상태: " + firstTerminal.isLogined());
 
+        System.out.println("터미널 시간 설정");
         TerminalTimeManager terminalTimeManager = new TerminalTimeManager();
         terminalTimeManager.setCurrentTime(sdkManager, firstTerminal);
+
+        System.out.println("reboot 스케쥴 조회");
+        RebootManager rebootManager = new RebootManager();
+        rebootManager.searchRebootTask(sdkManager, firstTerminal);
     }
 }

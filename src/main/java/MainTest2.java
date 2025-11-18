@@ -29,16 +29,19 @@ public class MainTest2 {
 
         PowerManager powerManager = new PowerManager();
         System.out.println("전원 관리 모드 설정");
-        powerManager.setPowerMode(sdkManager, firstTerminal, "AUTO");
+        powerManager.setPowerMode(sdkManager, firstTerminal, "MANUALLY");
 
         System.out.println("전원 관리 모드 조회");
         powerManager.readPowerMode(sdkManager,  firstTerminal);
 
         System.out.println("전원 상태 설정");
-        powerManager.setPowerState(sdkManager, firstTerminal, "OPEN");
+        powerManager.setPowerState(sdkManager, firstTerminal, "CLOSE");
 
         System.out.println("전원 상태 조회");
         powerManager.readPowerState(sdkManager,  firstTerminal);
+
+        System.out.println("전원 관리 스케쥴 설정");
+        powerManager.setPowerSchedule(sdkManager, firstTerminal, "0 0 6 * * ?", "0 0 22 * * ?");
 
         System.out.println("AUTO면 스케쥴 조회");
         powerManager.readPowerSchedule(sdkManager,  firstTerminal);

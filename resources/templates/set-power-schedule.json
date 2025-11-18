@@ -1,0 +1,13 @@
+{
+  "sn": "",
+  "taskInfo": {
+    "type": "SCREENPOWER",
+    "source": {
+      "type": 0,
+      "platform": 1
+    },
+    "enable": true,
+    "conditions": [
+    ]
+  }
+}

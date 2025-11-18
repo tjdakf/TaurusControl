@@ -115,7 +115,33 @@ public class PowerManager {
         obj.put("sn", terminal.getSn());
         obj.getJSONObject("taskInfo").put("state", state);
 
-        sdk.getViplexCore().nvSetScreenPowerModeAsync(obj.toString(), callBack);
+        sdk.getViplexCore().nvSetScreenPowerStateAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+
+    public void setPowerSchedule(SDKManager sdk, Terminal terminal, String onCron, String offCron) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject onCondition = TemplateLoader.load("power-schedule-condition.json");
+        onCondition.put("action", "OPEN");
+        onCondition.getJSONArray("cron").put(0, onCron);
+        JSONObject offCondition = TemplateLoader.load("power-schedule-condition.json");
+        offCondition.put("action", "CLOSE");
+        offCondition.getJSONArray("cron").put(0, offCron);
+        JSONObject obj = TemplateLoader.load("set-power-schedule.json");
+        obj.put("sn", terminal.getSn());
+        obj.getJSONObject("taskInfo").getJSONArray("conditions").put(0, onCondition);
+        obj.getJSONObject("taskInfo").getJSONArray("conditions").put(1, offCondition);
+
+        sdk.getViplexCore().nvSetScreenPowerPolicyAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
     }
 }

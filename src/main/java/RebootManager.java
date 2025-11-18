@@ -1,8 +1,6 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.time.DayOfWeek;
-
 public class RebootManager {
     public void searchRebootTask(SDKManager sdk, Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
@@ -27,7 +25,8 @@ public class RebootManager {
                         .getJSONArray("cron")
                         .getString(0);
 
-                parseSchedule(cron);
+                String Schedule = CronParser.parse(cron);
+                System.out.println(Schedule);
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -61,17 +60,5 @@ public class RebootManager {
 
         sdk.getViplexCore().nvSetReBootTaskAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
-    }
-
-    private void parseSchedule(String cron) {
-        String[] parts = cron.split(" ");
-        String minute = parts[1];
-        String hour = parts[2];
-        int dayOfWeek = Integer.parseInt(parts[5]) - 1; // SDK응답 SUN:1 - SAT:7
-        if (dayOfWeek == 0) {
-            dayOfWeek = 7;
-        }
-        System.out.printf("%s %s시 %s분\n",
-                DayOfWeek.of(dayOfWeek).name(), hour, minute);
     }
 }

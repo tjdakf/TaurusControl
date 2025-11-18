@@ -16,7 +16,13 @@ public class TerminalTimeManager {
     private static final String DEFAULT_ZONEID = "Asia/Seoul";
     private static final String TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    public void setCurrentTime(SDKManager sdk, Terminal terminal) {
+    private final SDKManager sdk;
+
+    public TerminalTimeManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void setCurrentTime(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {

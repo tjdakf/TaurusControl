@@ -10,7 +10,13 @@ import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
 public class RebootManager {
-    public void searchRebootTask(SDKManager sdk, Terminal terminal) {
+    private final SDKManager sdk;
+
+    public RebootManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void searchRebootTask(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -47,7 +53,7 @@ public class RebootManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setRebootTask(SDKManager sdk, Terminal terminal, String cron) {
+    public void setRebootTask(Terminal terminal, String cron) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {

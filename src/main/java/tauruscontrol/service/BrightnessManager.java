@@ -8,7 +8,13 @@ import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
 public class BrightnessManager {
-    public void readLedBrightness(SDKManager sdk, Terminal terminal) {
+    private final SDKManager sdk;
+
+    public BrightnessManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void readLedBrightness(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -30,7 +36,7 @@ public class BrightnessManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setLedBrightness(SDKManager sdk, Terminal terminal, float brightness) {
+    public void setLedBrightness(Terminal terminal, float brightness) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {

@@ -10,7 +10,13 @@ import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
 public class PowerManager {
-    public void readPowerMode(SDKManager sdk, Terminal terminal) {
+    private final SDKManager sdk;
+
+    public PowerManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void readPowerMode(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -31,7 +37,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void readPowerState(SDKManager sdk, Terminal terminal) {
+    public void readPowerState(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -52,7 +58,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void readPowerSchedule(SDKManager sdk, Terminal terminal) {
+    public void readPowerSchedule(Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -89,7 +95,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setPowerMode(SDKManager sdk, Terminal terminal, String mode) {
+    public void setPowerMode(Terminal terminal, String mode) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -108,7 +114,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setPowerState(SDKManager sdk, Terminal terminal, String state) {
+    public void setPowerState(Terminal terminal, String state) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -127,7 +133,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setPowerSchedule(SDKManager sdk, Terminal terminal, String onCron, String offCron) {
+    public void setPowerSchedule(Terminal terminal, String onCron, String offCron) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {

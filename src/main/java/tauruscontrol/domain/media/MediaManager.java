@@ -12,12 +12,18 @@ import java.util.List;
 
 public class MediaManager {
     private static final List<String> VALID_EXTENSIONS = List.of("mp4", "avi", "jpg", "png", "gif");
+
+    private final SDKManager sdk;
     private List<Media> medias = new ArrayList<>();
     private String md5;
 
-    public void addMedia(SDKManager sdk, String path) {
+    public MediaManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void addMedia(String path) {
         validateMedia(path);
-        String md5 = calculateMD5(sdk,  path);
+        String md5 = calculateMD5(path);
         medias.add(new Media(path, md5));
     }
 
@@ -65,7 +71,7 @@ public class MediaManager {
         }
     }
 
-    private String calculateMD5(SDKManager sdk, String path) {
+    private String calculateMD5(String path) {
         ViplexCore.CallBack callBack = (code, data) -> {
             md5 = data;
 

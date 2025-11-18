@@ -12,10 +12,15 @@ import tauruscontrol.sdk.ViplexCore;
 public class ProgramManager {
     private static final String PROGRAM_OUTPUT_PATH = "temp/program";
 
+    private final SDKManager sdk;
     private int programId;
     private Exception callbackException = null;
 
-    public void editProgram(SDKManager sdk, MediaManager mediaManager) {
+    public ProgramManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void editProgram(MediaManager mediaManager) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -34,7 +39,7 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void saveProgramToLocal(SDKManager sdk) {
+    public void saveProgramToLocal() {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -53,7 +58,7 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void publishProgram(SDKManager sdk, Terminal terminal, MediaManager mediaManager) {
+    public void publishProgram(Terminal terminal, MediaManager mediaManager) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code == 65362) {
@@ -85,17 +90,17 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public int findOrCreateProgramId(SDKManager sdk, Terminal terminal) {
-        findProgramId(sdk, terminal);
+    public int findOrCreateProgramId(Terminal terminal) {
+        findProgramId(terminal);
 
         if (programId == 0) {
-            createProgram(sdk, terminal);
+            createProgram(terminal);
         }
 
         return programId;
     }
 
-    private void findProgramId(SDKManager sdk, Terminal terminal) {
+    private void findProgramId(Terminal terminal) {
         programId = 0;
 
         ViplexCore.CallBack callBack = (code, data) -> {
@@ -116,7 +121,7 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    private void createProgram(SDKManager sdk, Terminal terminal) {
+    private void createProgram(Terminal terminal) {
         callbackException = null;
 
         ViplexCore.CallBack callBack = (code, data) -> {

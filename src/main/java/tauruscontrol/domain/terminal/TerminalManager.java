@@ -13,10 +13,15 @@ import java.util.List;
 public class TerminalManager {
     private static final int SEARCH_TIMEOUT = 3000;
 
+    private final SDKManager sdk;
     private List<Terminal> terminals = new ArrayList<>();
     private Exception callbackException = null;
 
-    public void searchTerminal(SDKManager sdk) throws InterruptedException {
+    public TerminalManager() {
+        this.sdk = SDKManager.getInstance();
+    }
+
+    public void searchTerminal() throws InterruptedException {
         terminals.clear();
 
         ViplexCore.CallBack callBack = (code, data) -> {
@@ -32,7 +37,7 @@ public class TerminalManager {
         Thread.sleep(SEARCH_TIMEOUT);
     }
 
-    public void loginTerminal(SDKManager sdk, String sn, String password) {
+    public void loginTerminal(String sn, String password) {
         callbackException = null;
 
         ViplexCore.CallBack callBack = (code, data) -> {

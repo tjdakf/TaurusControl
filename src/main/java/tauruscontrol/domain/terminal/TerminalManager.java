@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TerminalManager {
+    private static final int SEARCH_TIMEOUT = 3000;
+
     private List<Terminal> terminals = new ArrayList<>();
     private Exception callbackException = null;
 
@@ -27,7 +29,7 @@ public class TerminalManager {
         };
 
         sdk.getViplexCore().nvSearchTerminalAsync(callBack);
-        Thread.sleep(3000);
+        Thread.sleep(SEARCH_TIMEOUT);
     }
 
     public void loginTerminal(SDKManager sdk, String sn, String password) {

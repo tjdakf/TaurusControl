@@ -1,12 +1,14 @@
 package tauruscontrol.util;
 
 public class AsyncHelper {
+    private static final int WAIT_INTERVAL = 1000;
+
     static boolean apiReturn = false;
 
     public static void waitAPIReturn() {
         try {
             while (!apiReturn) {
-                Thread.sleep(1000);
+                Thread.sleep(WAIT_INTERVAL);
             }
             apiReturn = false;
         } catch (InterruptedException e) {

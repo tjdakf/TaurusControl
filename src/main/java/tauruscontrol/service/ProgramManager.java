@@ -10,6 +10,8 @@ import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
 public class ProgramManager {
+    private static final String PROGRAM_OUTPUT_PATH = "temp/program";
+
     private int programId;
     private Exception callbackException = null;
 
@@ -45,7 +47,7 @@ public class ProgramManager {
 
         JSONObject obj = TemplateLoader.load("save-program.json");
         obj.put("programID", programId);
-        obj.put("outPutPath", "temp/program");
+        obj.put("outPutPath", PROGRAM_OUTPUT_PATH);
 
         sdk.getViplexCore().nvMakeProgramAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();

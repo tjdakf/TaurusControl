@@ -13,6 +13,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class TerminalTimeManager {
+    private static final String DEFAULT_ZONEID = "Asia/Seoul";
+    private static final String TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
     public void setCurrentTime(SDKManager sdk, Terminal terminal) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
@@ -25,10 +28,10 @@ public class TerminalTimeManager {
         };
 
         Instant now = Instant.now();
-        ZoneId zone = ZoneId.of("Asia/Seoul");
+        ZoneId zone = ZoneId.of(DEFAULT_ZONEID);
         long utcTimeMillis = now.toEpochMilli();
         String currentTime = LocalDateTime.ofInstant(now, zone)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                .format(DateTimeFormatter.ofPattern(TIME_FORMAT_PATTERN));
 
 
         JSONObject obj = TemplateLoader.load("set-time.json");

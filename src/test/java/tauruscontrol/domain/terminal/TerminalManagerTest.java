@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TerminalManagerTest {
     @Test
@@ -44,8 +44,6 @@ class TerminalManagerTest {
 
         List<Terminal> result = terminalManager.getTerminals();
 
-        assertEquals(terminal3, result.get(0));
-        assertEquals(terminal2, result.get(1));
-        assertEquals(terminal1, result.get(2));
+        assertThat(result).containsExactly(terminal3, terminal2, terminal1);
     }
 }

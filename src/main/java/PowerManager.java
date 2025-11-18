@@ -1,0 +1,24 @@
+import org.json.JSONObject;
+
+public class PowerManager {
+    public void readPowerMode(SDKManager sdk, Terminal terminal) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+
+                JSONObject obj = new JSONObject(data);
+                System.out.println("전원 설정 모드: " + obj.getString("mode"));
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("terminal-request.json");
+        obj.put("sn", terminal.getSn());
+
+        sdk.getViplexCore().nvGetScreenPowerModeAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
+}

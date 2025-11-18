@@ -107,7 +107,7 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽게 사용할 수 있도
 - [x] 현재 터미널의 밝기를 변경
 
 ### ON/OFF 타이머 설정
-- [ ] 현재 터미널의 타이머 설정을 조회(MANUAL or SCHEDULE)
+- [x] 현재 터미널의 타이머 설정을 조회(MANUAL or SCHEDULE)
 - [ ] 현재 터미널의 ON/OFF 상태를 조회
 - [ ] SCHEDULE이면 설정된 시간을 조회
 - [ ] 타이머 설정 타입 변경(MANUAL or SCHEDULE)

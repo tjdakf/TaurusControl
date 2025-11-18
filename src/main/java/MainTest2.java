@@ -26,5 +26,9 @@ public class MainTest2 {
 
         System.out.println("reboot 스케쥴 조회");
         rebootManager.searchRebootTask(sdkManager, firstTerminal);
+
+        System.out.println("전원 관리 모드 조회");
+        PowerManager powerManager = new PowerManager();
+        powerManager.readPowerMode(sdkManager,  firstTerminal);
     }
 }

@@ -15,6 +15,7 @@ dependencies {
     implementation 'net.java.dev.jna:jna-platform:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
 java {

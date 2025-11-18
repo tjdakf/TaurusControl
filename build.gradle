@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group = 'tauruscontrol'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.json:json:20250517'
+    implementation 'net.java.dev.jna:jna:5.6.0'
+    implementation 'net.java.dev.jna:jna-platform:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'file.encoding', 'UTF-8'
+}

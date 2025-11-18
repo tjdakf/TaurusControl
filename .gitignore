@@ -34,3 +34,8 @@ out/
 /program1
 /temp
 *.txt
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar

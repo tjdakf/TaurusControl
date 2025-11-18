@@ -83,7 +83,7 @@ public class ProgramManager {
         JSONObject obj = TemplateLoader.load("publish.json");
         obj.put("sn", terminal.getSn());
         JSONObject filePaths = obj.getJSONObject("sendProgramFilePaths");
-        filePaths.put("programPath", System.getProperty("user.dir") + "/temp/program/program1");
+        filePaths.put("programPath", System.getProperty("user.dir") + "/temp/program/program" + programId);
         filePaths.put("mediasPath", mediaManager.buildMediasPath());
 
         sdk.getViplexCore().nvStartTransferProgramAsync(obj.toString(), callBack);

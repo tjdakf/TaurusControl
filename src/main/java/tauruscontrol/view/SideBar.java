@@ -13,8 +13,11 @@ import javafx.scene.layout.StackPane;
 public class SideBar extends VBox {
 
     private Button selectedButton = null;
+    private MenuSelectionListener listener;
 
-    public SideBar() {
+    public SideBar(MenuSelectionListener listener) {
+        this.listener = listener;
+
         setPrefWidth(220);
         setStyle(
                 "-fx-background-color: #5a5a5a;" +
@@ -123,5 +126,14 @@ public class SideBar extends VBox {
                         "-fx-border-width: 0;" +
                         "-fx-cursor: hand;"
         );
+
+        if (listener != null) {
+            listener.onMenuSelected(button.getText());
+        }
+    }
+
+    @FunctionalInterface
+    public interface MenuSelectionListener {
+        void onMenuSelected(String menuName);
     }
 }

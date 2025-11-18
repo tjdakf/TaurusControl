@@ -14,6 +14,9 @@ public class MainView extends BorderPane {
         );
 
         TitleBar titleBar = new TitleBar(stage);
+        SideBar sideBar = new SideBar();
+
         setTop(titleBar);
+        setLeft(sideBar);
     }
 }

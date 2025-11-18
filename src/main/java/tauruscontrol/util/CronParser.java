@@ -1,4 +1,4 @@
-package tauruscontrol;
+package tauruscontrol.util;
 
 public class CronParser {
     private static final String[] DAY_OF_WEEK = {

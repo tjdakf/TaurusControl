@@ -2,9 +2,9 @@ package tauruscontrol.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import tauruscontrol.AsyncHelper;
-import tauruscontrol.CronParser;
-import tauruscontrol.TemplateLoader;
+import tauruscontrol.util.AsyncHelper;
+import tauruscontrol.util.CronParser;
+import tauruscontrol.util.TemplateLoader;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;

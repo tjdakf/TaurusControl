@@ -1,7 +1,7 @@
 package tauruscontrol.domain.media;
 
 import org.json.JSONObject;
-import tauruscontrol.TemplateLoader;
+import tauruscontrol.util.TemplateLoader;
 
 public class Media {
     private String path;

@@ -1,4 +1,4 @@
-package tauruscontrol;
+package tauruscontrol.util;
 
 public class AsyncHelper {
     static boolean apiReturn = false;

@@ -1,3 +1,7 @@
+package tauruscontrol;
+
+import tauruscontrol.sdk.SDKManager;
+
 public class MainTest {
     public static void main(String[] args) throws InterruptedException {
         SDKManager sdkManager = SDKManager.getInstance();

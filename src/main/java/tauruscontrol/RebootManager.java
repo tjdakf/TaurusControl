@@ -1,5 +1,9 @@
+package tauruscontrol;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.sdk.ViplexCore;
 
 public class RebootManager {
     public void searchRebootTask(SDKManager sdk, Terminal terminal) {

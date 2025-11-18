@@ -1,3 +1,5 @@
+package tauruscontrol;
+
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 

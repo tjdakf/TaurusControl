@@ -1,5 +1,9 @@
+package tauruscontrol;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.sdk.ViplexCore;
 
 public class ProgramManager {
     private int programId;

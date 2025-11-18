@@ -1,3 +1,5 @@
+package tauruscontrol.sdk;
+
 import com.sun.jna.Library;
 import com.sun.jna.Callback;
 

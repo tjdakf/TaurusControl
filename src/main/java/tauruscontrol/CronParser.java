@@ -1,3 +1,5 @@
+package tauruscontrol;
+
 public class CronParser {
     private static final String[] DAY_OF_WEEK = {
             "", "일", "월", "화", "수", "목", "금", "토"

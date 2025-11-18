@@ -1,4 +1,8 @@
+package tauruscontrol;
+
 import org.json.JSONObject;
+import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.sdk.ViplexCore;
 
 import java.util.ArrayList;
 import java.util.Comparator;

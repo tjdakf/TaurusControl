@@ -1,5 +1,9 @@
+package tauruscontrol;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.sdk.ViplexCore;
 
 public class PowerManager {
     public void readPowerMode(SDKManager sdk, Terminal terminal) {

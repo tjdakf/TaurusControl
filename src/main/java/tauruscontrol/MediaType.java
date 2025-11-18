@@ -1,3 +1,5 @@
+package tauruscontrol;
+
 public enum MediaType {
     VIDEO, PICTURE, GIF;
 

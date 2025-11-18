@@ -1,5 +1,8 @@
+package tauruscontrol.sdk;
+
 import com.sun.jna.Native;
 import org.json.JSONObject;
+import tauruscontrol.TemplateLoader;
 
 public class SDKManager {
     private static SDKManager instance;

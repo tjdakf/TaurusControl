@@ -1,5 +1,8 @@
+package tauruscontrol;
+
 import com.sun.jna.Native;
 import org.json.JSONObject;
+import tauruscontrol.sdk.ViplexCore;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,15 +35,15 @@ public class Application {
         JSONObject obj;
         System.setProperty("jna.encoding", "UTF-8");
         System.setProperty("jna.library.path", jnaDir);
-        ViplexCore viplexCore = (ViplexCore) Native.loadLibrary("viplexcore",ViplexCore.class);
+        ViplexCore viplexCore = (ViplexCore) Native.loadLibrary("viplexcore", ViplexCore.class);
 
         ViplexCore.CallBack callBack = new ViplexCore.CallBack() {
             @Override
             public void dataCallBack(int code, String data) {
                 g_code = code;
                 g_data = data;
-                String strCode = "\nViplexCore Demo code:" + code;
-                String strData = "\nViplexCore Demo data:" + data;
+                String strCode = "\ntauruscontrol.sdk.ViplexCore Demo code:" + code;
+                String strData = "\ntauruscontrol.sdk.ViplexCore Demo data:" + data;
                 System.out.println(strCode);
                 System.out.println(strData);
                 g_bAPIReturn=true;

@@ -1,4 +1,8 @@
+package tauruscontrol;
+
 import org.json.JSONObject;
+import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.sdk.ViplexCore;
 
 public class BrightnessManager {
     public void readLedBrightness(SDKManager sdk, Terminal terminal) {

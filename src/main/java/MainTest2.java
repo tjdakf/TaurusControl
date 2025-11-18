@@ -34,6 +34,9 @@ public class MainTest2 {
         System.out.println("전원 관리 모드 조회");
         powerManager.readPowerMode(sdkManager,  firstTerminal);
 
+        System.out.println("전원 상태 설정");
+        powerManager.setPowerState(sdkManager, firstTerminal, "OPEN");
+
         System.out.println("전원 상태 조회");
         powerManager.readPowerState(sdkManager,  firstTerminal);
 

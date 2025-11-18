@@ -99,4 +99,23 @@ public class PowerManager {
         sdk.getViplexCore().nvSetScreenPowerModeAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
     }
+
+    public void setPowerState(SDKManager sdk, Terminal terminal, String state) {
+        ViplexCore.CallBack callBack = (code, data) -> {
+            try {
+                if (code != 0) {
+                    throw new RuntimeException(code + ": " + data);
+                }
+            } finally {
+                AsyncHelper.setApiReturn(true);
+            }
+        };
+
+        JSONObject obj = TemplateLoader.load("set-power-state.json");
+        obj.put("sn", terminal.getSn());
+        obj.getJSONObject("taskInfo").put("state", state);
+
+        sdk.getViplexCore().nvSetScreenPowerModeAsync(obj.toString(), callBack);
+        AsyncHelper.waitAPIReturn();
+    }
 }

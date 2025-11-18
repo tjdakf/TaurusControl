@@ -2,6 +2,7 @@ package tauruscontrol;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 

@@ -1,4 +1,4 @@
-package tauruscontrol;
+package tauruscontrol.domain.media;
 
 public enum MediaType {
     VIDEO, PICTURE, GIF;

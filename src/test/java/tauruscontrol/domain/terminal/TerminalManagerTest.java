@@ -1,4 +1,4 @@
-package tauruscontrol;
+package tauruscontrol.domain.terminal;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;

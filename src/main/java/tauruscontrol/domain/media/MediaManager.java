@@ -1,6 +1,8 @@
-package tauruscontrol;
+package tauruscontrol.domain.media;
 
 import org.json.JSONObject;
+import tauruscontrol.AsyncHelper;
+import tauruscontrol.TemplateLoader;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 

@@ -1,4 +1,4 @@
-package tauruscontrol;
+package tauruscontrol.domain.terminal;
 
 import org.json.JSONObject;
 

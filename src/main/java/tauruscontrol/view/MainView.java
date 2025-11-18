@@ -1,12 +1,14 @@
 package tauruscontrol.view;
 
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class MainView extends BorderPane {
 
     private ContentArea contentArea;
+    private LoginView loginView;  // 재사용할 LoginView
 
     public MainView(Stage stage) {
         setPrefSize(1200, 700);
@@ -17,8 +19,8 @@ public class MainView extends BorderPane {
         );
 
         TitleBar titleBar = new TitleBar(stage);
-        SideBar sideBar = new SideBar(this::onMenuSelected);
         contentArea = new ContentArea();
+        SideBar sideBar = new SideBar(this::onMenuSelected);
 
         setTop(titleBar);
         setLeft(sideBar);
@@ -28,7 +30,17 @@ public class MainView extends BorderPane {
     }
 
     private void onMenuSelected(String menuName) {
-        // 나중에 메뉴별로 다른 View 표시
-        System.out.println("선택된 메뉴: " + menuName);
+        switch (menuName) {
+            case "로그인 관리" -> {
+                if (loginView == null) {
+                    loginView = new LoginView();  // 최초 1회만 생성
+                    loginView.refresh();  // 명시적으로 데이터 로딩
+                }
+                contentArea.setContent(loginView);
+            }
+            case "재생 관리" -> contentArea.setContent(new Label("재생 관리 화면"));
+            case "스케줄 관리" -> contentArea.setContent(new Label("스케줄 관리 화면"));
+            case "터미널 설정" -> contentArea.setContent(new Label("터미널 설정 화면"));
+        }
     }
 }

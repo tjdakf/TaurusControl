@@ -1,0 +1,327 @@
+package tauruscontrol.view;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+import tauruscontrol.controller.LoginController;
+import tauruscontrol.domain.terminal.Terminal;
+
+public class LoginView extends StackPane {
+
+    private final LoginController controller;
+    private final VBox terminalListContainer;
+    private final VBox loadingBox;
+    private final VBox contentBox;
+
+    public LoginView() {
+        this.controller = new LoginController();
+
+        // 로딩 박스
+        loadingBox = createLoadingBox();
+
+        // 메인 컨텐츠
+        contentBox = new VBox();
+        contentBox.setAlignment(Pos.TOP_LEFT);
+        contentBox.setFillWidth(true);
+
+        // 검색 버튼
+        Button searchButton = new Button("터미널 검색");
+        styleSearchButton(searchButton);
+        searchButton.setOnAction(event -> searchTerminals());
+        VBox.setMargin(searchButton, new Insets(20,0, 30, 50));
+
+        // 헤더
+        HBox header = createHeader();
+
+        // 터미널 리스트 컨테이너
+        terminalListContainer = new VBox();
+        terminalListContainer.setStyle("-fx-background-color: #3e3e3e; -fx-border-width: 0; -fx-spacing: 0;");
+        terminalListContainer.setFillWidth(true);
+        terminalListContainer.setMinHeight(0);
+        terminalListContainer.setPrefHeight(0);
+        VBox.setVgrow(terminalListContainer, Priority.ALWAYS);
+        terminalListContainer.setMaxHeight(Double.MAX_VALUE);
+        terminalListContainer.setSnapToPixel(true);
+
+        // 오버플로우 완전히 숨기기
+        terminalListContainer.setClip(new javafx.scene.shape.Rectangle());
+        terminalListContainer.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+            javafx.scene.shape.Rectangle clip = (javafx.scene.shape.Rectangle) terminalListContainer.getClip();
+            clip.setWidth(newBounds.getWidth());
+            clip.setHeight(newBounds.getHeight());
+        });
+
+        contentBox.getChildren().addAll(searchButton, header, terminalListContainer);
+        contentBox.setVisible(false);
+
+        getChildren().addAll(contentBox, loadingBox);
+    }
+
+    public void refresh() {
+        searchTerminals();
+    }
+
+    private HBox createHeader() {
+        HBox header = new HBox();
+        header.setStyle("-fx-background-color: #323232; -fx-padding: 10;");
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setMinHeight(40);
+        header.setPrefHeight(40);
+        header.setMaxHeight(40);
+
+        // 상태 - 고정 60px
+        Label statusLabel = new Label("");
+        statusLabel.setMinWidth(60);
+        statusLabel.setPrefWidth(60);
+        statusLabel.setMaxWidth(60);
+        statusLabel.setAlignment(Pos.CENTER);
+
+        // 터미널 이름 - 늘어남
+        Label nameLabel = new Label("터미널 이름");
+        nameLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-font-family: 'System';");
+        nameLabel.setMinWidth(300);
+        nameLabel.setPrefWidth(300);
+        nameLabel.setMaxWidth(300);
+
+        // 해상도 - 고정 150px (20px 패딩 포함)
+        Label resolutionLabel = new Label("해상도");
+        resolutionLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-padding: 0 0 0 20;");
+        resolutionLabel.setMinWidth(250);
+        resolutionLabel.setPrefWidth(250);
+        resolutionLabel.setMaxWidth(250);
+
+        // 액션 - 고정 100px
+        Label actionLabel = new Label("");
+        actionLabel.setMinWidth(100);
+        actionLabel.setPrefWidth(100);
+        actionLabel.setMaxWidth(100);
+
+        header.getChildren().addAll(statusLabel, nameLabel, resolutionLabel, actionLabel);
+        return header;
+    }
+
+    private HBox createTerminalRow(Terminal terminal, int index) {
+        HBox row = new HBox();
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(10));
+        row.setFillHeight(true);
+        VBox.setVgrow(row, Priority.ALWAYS);
+        row.setMinHeight(0);
+        row.setPrefHeight(0);
+        row.setMaxHeight(Double.MAX_VALUE);
+
+        if (index % 2 == 0) {
+            row.setStyle("-fx-background-color: #3a3a3a;");
+        } else {
+            row.setStyle("-fx-background-color: #323232;");
+        }
+
+        // 상태 표시등 - 60px
+        Circle statusCircle = new Circle(8);
+        statusCircle.setFill(terminal.isLogined() ? Color.LIMEGREEN : Color.GRAY);
+        HBox statusBox = new HBox(statusCircle);
+        statusBox.setAlignment(Pos.CENTER);
+        statusBox.setMinWidth(60);
+        statusBox.setPrefWidth(60);
+        statusBox.setMaxWidth(60);
+        statusBox.setMinHeight(0);
+        statusBox.setMaxHeight(Double.MAX_VALUE);
+
+        // 터미널 이름 - 늘어남
+        Label nameLabel = new Label(terminal.getAliasName());
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: 'System';");
+        nameLabel.setMinWidth(300);
+        nameLabel.setPrefWidth(300);
+        nameLabel.setMaxWidth(300);
+        nameLabel.setMinHeight(0);
+        nameLabel.setMaxHeight(Double.MAX_VALUE);
+
+
+        // 해상도 - 150px (20px 패딩 포함)
+        Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
+        resolutionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: 'System'; -fx-padding: 0 0 0 20;");
+        resolutionLabel.setMinWidth(250);
+        resolutionLabel.setPrefWidth(250);
+        resolutionLabel.setMaxWidth(250);
+        resolutionLabel.setMinHeight(0);
+        resolutionLabel.setMaxHeight(Double.MAX_VALUE);
+
+        // 로그인 버튼 - 100px
+        HBox actionBox = new HBox();
+        actionBox.setMinWidth(100);
+        actionBox.setPrefWidth(100);
+        actionBox.setMaxWidth(100);
+        actionBox.setAlignment(Pos.CENTER);
+        actionBox.setMinHeight(0);
+        actionBox.setMaxHeight(Double.MAX_VALUE);
+
+        if (!terminal.isLogined()) {
+            Button loginButton = new Button("로그인");
+            styleLoginButton(loginButton);
+            loginButton.setOnAction(event -> {
+                System.out.println("로그인: " + terminal.getAliasName());
+            });
+            actionBox.getChildren().add(loginButton);
+        }
+
+        row.getChildren().addAll(statusBox, nameLabel, resolutionLabel, actionBox);
+        return row;
+    }
+
+    private HBox createEmptyRow(int index) {
+        HBox row = new HBox();
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(10));
+        row.setFillHeight(true);
+        VBox.setVgrow(row, Priority.ALWAYS);
+        row.setMinHeight(0);
+        row.setPrefHeight(0);
+        row.setMaxHeight(Double.MAX_VALUE);
+
+        if (index % 2 == 0) {
+            row.setStyle("-fx-background-color: #3a3a3a;");
+        } else {
+            row.setStyle("-fx-background-color: #323232;");
+        }
+
+        return row;
+    }
+
+    private VBox createLoadingBox() {
+        VBox box = new VBox(15);
+        box.setAlignment(Pos.CENTER);
+        box.setPrefSize(180, 120);
+        box.setMaxSize(180, 120);
+        box.setStyle(
+                "-fx-background-color: #2a2a2a;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+        );
+
+        Label label = new Label("터미널 검색 중...");
+        label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        box.getChildren().add(label);
+        return box;
+    }
+
+    private void searchTerminals() {
+        loadingBox.setVisible(true);
+        contentBox.setVisible(false);
+
+        controller.searchTerminals(
+                terminals -> {
+                    terminalListContainer.getChildren().clear();
+
+                    // 실제 터미널 표시 (최대 10개까지만)
+                    int terminalCount = Math.min(terminals.size(), 10);
+                    for (int i = 0; i < terminalCount; i++) {
+                        HBox row = createTerminalRow(terminals.get(i), i);
+                        terminalListContainer.getChildren().add(row);
+                    }
+
+                    // 빈 줄 채우기 (10개 고정)
+                    for (int i = terminalCount; i < 10; i++) {
+                        HBox emptyRow = createEmptyRow(i);
+                        terminalListContainer.getChildren().add(emptyRow);
+                    }
+
+                    loadingBox.setVisible(false);
+                    contentBox.setVisible(true);
+                },
+                error -> {
+                    System.err.println("검색 실패: " + error.getMessage());
+                    loadingBox.setVisible(false);
+                    contentBox.setVisible(true);
+                }
+        );
+    }
+
+    private void styleSearchButton(Button button) {
+        button.setStyle(
+                "-fx-background-color: #5a5a5a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-padding: 10 20;" +
+                        "-fx-border-color: #999999;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        );
+
+        button.setOnMouseEntered(e -> button.setStyle(
+                "-fx-background-color: #323232;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-padding: 10 20;" +
+                        "-fx-border-color: #999999;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        ));
+
+        button.setOnMouseExited(e -> button.setStyle(
+                "-fx-background-color: #5a5a5a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-padding: 10 20;" +
+                        "-fx-border-color: #999999;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        ));
+    }
+
+    private void styleLoginButton(Button button) {
+        button.setPrefWidth(80);
+        button.setStyle(
+                "-fx-background-color: #5a5a5a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 3;" +
+                        "-fx-background-radius: 3;" +
+                        "-fx-cursor: hand;"
+        );
+
+        button.setOnMouseEntered(e -> button.setStyle(
+                "-fx-background-color: #323232;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 3;" +
+                        "-fx-background-radius: 3;" +
+                        "-fx-cursor: hand;"
+        ));
+
+        button.setOnMouseExited(e -> button.setStyle(
+                "-fx-background-color: #5a5a5a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 3;" +
+                        "-fx-background-radius: 3;" +
+                        "-fx-cursor: hand;"
+        ));
+    }
+}

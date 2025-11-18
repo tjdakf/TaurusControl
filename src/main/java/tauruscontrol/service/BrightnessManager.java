@@ -1,6 +1,8 @@
-package tauruscontrol;
+package tauruscontrol.service;
 
 import org.json.JSONObject;
+import tauruscontrol.AsyncHelper;
+import tauruscontrol.TemplateLoader;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;

@@ -4,6 +4,7 @@ import tauruscontrol.domain.media.MediaManager;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.service.ProgramManager;
 
 public class MainTest {
     public static void main(String[] args) throws InterruptedException {

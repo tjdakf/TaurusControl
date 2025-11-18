@@ -3,6 +3,9 @@ package tauruscontrol;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.sdk.SDKManager;
+import tauruscontrol.service.PowerManager;
+import tauruscontrol.service.RebootManager;
+import tauruscontrol.service.TerminalTimeManager;
 
 public class MainTest2 {
     public static void main(String[] args) throws InterruptedException {

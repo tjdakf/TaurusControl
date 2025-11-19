@@ -9,6 +9,7 @@ public class Terminal {
     private int height;
     private boolean logined;
     private boolean hasPassword;
+    private String password;
 
     public Terminal(JSONObject data) {
         this.aliasName = data.getString("aliasName");
@@ -17,6 +18,7 @@ public class Terminal {
         this.height = data.getInt("height");
         this.logined = data.getBoolean("logined");
         this.hasPassword = data.getBoolean("hasPassWord");
+        this.password = data.getString("password");
     }
 
     public boolean isLogined() {
@@ -37,6 +39,14 @@ public class Terminal {
 
     public int getHeight() {
         return height;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public boolean hasPassword() {
+        return hasPassword;
     }
 
     public void setLogined(boolean logined) {

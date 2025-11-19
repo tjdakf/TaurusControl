@@ -13,12 +13,17 @@ import javafx.scene.paint.Color;
 import tauruscontrol.controller.LoginController;
 import tauruscontrol.domain.terminal.Terminal;
 
+import java.util.List;
+
 public class LoginView extends StackPane {
 
     private final LoginController controller;
     private final VBox terminalListContainer;
     private final VBox loadingBox;
     private final VBox contentBox;
+    private StackPane passwordDialog;
+    private StackPane loginProgressBox;
+    private javafx.scene.control.PasswordField currentPasswordField;
 
     public LoginView() {
         this.controller = new LoginController();
@@ -66,6 +71,303 @@ public class LoginView extends StackPane {
 
     public void refresh() {
         searchTerminals();
+    }
+
+    private void renderTerminalList() {
+        List<Terminal> terminals = controller.getTerminals();
+        terminalListContainer.getChildren().clear();
+
+        int terminalCount = Math.min(terminals.size(), 10);
+        for (int i = 0; i < terminalCount; i++) {
+            HBox row = createTerminalRow(terminals.get(i), i);
+            terminalListContainer.getChildren().add(row);
+        }
+
+        for (int i = terminalCount; i < 10; i++) {
+            HBox emptyRow = createEmptyRow(i);
+            terminalListContainer.getChildren().add(emptyRow);
+        }
+    }
+
+    private void showPasswordDialog(Terminal terminal) {
+        passwordDialog = createPasswordDialog(terminal);
+        getChildren().add(passwordDialog);
+
+        // 다이얼로그가 렌더링된 후 포커스 설정
+        javafx.application.Platform.runLater(() -> {
+            if (currentPasswordField != null) {
+                currentPasswordField.requestFocus();
+            }
+        });
+    }
+
+    private void hidePasswordDialog() {
+        if (passwordDialog != null) {
+            getChildren().remove(passwordDialog);
+            passwordDialog = null;
+        }
+    }
+
+    private void showLoginProgress() {
+        loginProgressBox = createLoginProgressBox();
+        getChildren().add(loginProgressBox);
+    }
+
+    private void hideLoginProgress() {
+        if (loginProgressBox != null) {
+            getChildren().remove(loginProgressBox);
+            loginProgressBox = null;
+        }
+    }
+
+    private StackPane createPasswordDialog(Terminal terminal) {
+        StackPane dialog = new StackPane();
+        dialog.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        VBox card = new VBox(20);
+        card.setAlignment(Pos.CENTER);
+        card.setPrefSize(350, 200);
+        card.setMaxSize(350, 200);
+        card.setStyle(
+                "-fx-background-color: #5a5a5a;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-color: #999999;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+        );
+        card.setPadding(new Insets(30));
+
+        Label titleLabel = new Label(terminal.getAliasName() + " 로그인");
+        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+        // 비밀번호 필드와 토글 버튼을 담을 컨테이너
+        StackPane passwordContainer = new StackPane();
+        passwordContainer.setPrefWidth(290);
+
+        currentPasswordField = new javafx.scene.control.PasswordField();
+        currentPasswordField.setPromptText("비밀번호");
+        currentPasswordField.setPrefWidth(290);
+        currentPasswordField.setStyle(
+                "-fx-background-color: #323232;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-prompt-text-fill: #888888;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 10 40 10 10;" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;"
+        );
+
+        javafx.scene.control.TextField textField = new javafx.scene.control.TextField();
+        textField.setPromptText("비밀번호");
+        textField.setPrefWidth(290);
+        textField.setStyle(
+                "-fx-background-color: #323232;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-prompt-text-fill: #888888;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 10 40 10 10;" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;"
+        );
+        textField.setVisible(false);
+        textField.setManaged(false);
+
+        // 텍스트 동기화
+        currentPasswordField.textProperty().bindBidirectional(textField.textProperty());
+
+        // 토글 버튼
+        Button toggleButton = new Button("👁");
+        toggleButton.setPrefSize(30, 30);
+        toggleButton.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #cccccc;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-border-width: 0;"
+        );
+        StackPane.setAlignment(toggleButton, Pos.CENTER_RIGHT);
+        StackPane.setMargin(toggleButton, new Insets(0, 5, 0, 0));
+
+        toggleButton.setOnMousePressed(event -> {
+            currentPasswordField.setVisible(false);
+            currentPasswordField.setManaged(false);
+            textField.setVisible(true);
+            textField.setManaged(true);
+        });
+
+        toggleButton.setOnMouseReleased(event -> {
+            textField.setVisible(false);
+            textField.setManaged(false);
+            currentPasswordField.setVisible(true);
+            currentPasswordField.setManaged(true);
+        });
+
+        passwordContainer.getChildren().addAll(currentPasswordField, textField, toggleButton);
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        Button confirmButton = new Button("확인");
+        Button cancelButton = new Button("취소");
+
+        styleDialogButton(confirmButton, true);
+        styleDialogButton(cancelButton, false);
+
+        confirmButton.setOnAction(event -> {
+            String password = currentPasswordField.getText();
+            if (!password.isEmpty()) {
+                hidePasswordDialog();
+                handleLogin(terminal, password);
+            }
+        });
+
+        cancelButton.setOnAction(event -> hidePasswordDialog());
+
+        currentPasswordField.setOnAction(event -> confirmButton.fire());
+        textField.setOnAction(event -> confirmButton.fire());
+
+        buttonBox.getChildren().addAll(confirmButton, cancelButton);
+        card.getChildren().addAll(titleLabel, passwordContainer, buttonBox);
+        dialog.getChildren().add(card);
+
+        return dialog;
+    }
+
+    private StackPane createLoginProgressBox() {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        VBox box = new VBox(15);
+        box.setAlignment(Pos.CENTER);
+        box.setPrefSize(180, 120);
+        box.setMaxSize(180, 120);
+        box.setStyle(
+                "-fx-background-color: #2a2a2a;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+        );
+
+        Label label = new Label("로그인 중...");
+        label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        box.getChildren().add(label);
+        overlay.getChildren().add(box);
+
+        return overlay;
+    }
+
+    private void handleLogin(Terminal terminal, String password) {
+        showLoginProgress();
+
+        controller.loginTerminal(
+                terminal.getSn(),
+                password,
+                () -> {
+                    hideLoginProgress();
+                    renderTerminalList();
+                },
+                error -> {
+                    hideLoginProgress();
+                    showLoginErrorDialog(error.getMessage());
+                    System.err.println("로그인 실패: " + error.getMessage());
+                }
+        );
+    }
+
+    private void showLoginErrorDialog(String errorMessage) {
+        StackPane errorDialog = createLoginErrorDialog(errorMessage);
+        getChildren().add(errorDialog);
+
+        // 2초 후 자동으로 닫기
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                javafx.application.Platform.runLater(() -> {
+                    getChildren().remove(errorDialog);
+                });
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+
+    private StackPane createLoginErrorDialog(String errorMessage) {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        VBox box = new VBox(15);
+        box.setAlignment(Pos.CENTER);
+        box.setPrefSize(250, 150);
+        box.setMaxSize(250, 150);
+        box.setStyle(
+                "-fx-background-color: #2a2a2a;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+        );
+        box.setPadding(new Insets(20));
+
+        Label titleLabel = new Label("로그인 실패");
+        titleLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label messageLabel = new Label(errorMessage != null ? errorMessage : "알 수 없는 오류");
+        messageLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(210);
+        messageLabel.setAlignment(Pos.CENTER);
+
+        box.getChildren().addAll(titleLabel, messageLabel);
+        overlay.getChildren().add(box);
+
+        return overlay;
+    }
+
+    private void styleDialogButton(Button button, boolean isPrimary) {
+        button.setPrefWidth(100);
+        String bgColor = isPrimary ? "#1E88E5" : "#5a5a5a";
+        String hoverColor = isPrimary ? "#1976D2" : "#323232";
+
+        button.setStyle(
+                "-fx-background-color: " + bgColor + ";" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        );
+
+        button.setOnMouseEntered(e -> button.setStyle(
+                "-fx-background-color: " + hoverColor + ";" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        ));
+
+        button.setOnMouseExited(e -> button.setStyle(
+                "-fx-background-color: " + bgColor + ";" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'System';" +
+                        "-fx-border-color: #6a6a6a;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+        ));
     }
 
     private HBox createHeader() {
@@ -165,9 +467,7 @@ public class LoginView extends StackPane {
         if (!terminal.isLogined()) {
             Button loginButton = new Button("로그인");
             styleLoginButton(loginButton);
-            loginButton.setOnAction(event -> {
-                System.out.println("로그인: " + terminal.getAliasName());
-            });
+            loginButton.setOnAction(event -> showPasswordDialog(terminal));
             actionBox.getChildren().add(loginButton);
         }
 
@@ -236,6 +536,9 @@ public class LoginView extends StackPane {
 
                     loadingBox.setVisible(false);
                     contentBox.setVisible(true);
+
+                    // 자동 로그인 시작
+                    autoLogin();
                 },
                 error -> {
                     System.err.println("검색 실패: " + error.getMessage());
@@ -243,6 +546,30 @@ public class LoginView extends StackPane {
                     contentBox.setVisible(true);
                 }
         );
+    }
+
+    private void autoLogin() {
+        List<Terminal> terminalsToLogin = controller.getTerminals().stream()
+                .filter(Terminal::hasPassword)
+                .filter(terminal -> !terminal.isLogined())
+                .toList();
+
+        if (terminalsToLogin.isEmpty()) {
+            return;
+        }
+
+        // 백그라운드 쓰레드에서 동기 방식으로 순차 로그인
+        new Thread(() -> {
+            for (Terminal terminal : terminalsToLogin) {
+                try {
+                    controller.loginTerminalSync(terminal.getSn(), terminal.getPassword());
+                } catch (Exception e) {
+                    // 실패는 무시하고 다음 터미널로
+                }
+            }
+            // 모든 자동 로그인 완료 후 화면 리로드
+            javafx.application.Platform.runLater(this::renderTerminalList);
+        }).start();
     }
 
     private void styleSearchButton(Button button) {

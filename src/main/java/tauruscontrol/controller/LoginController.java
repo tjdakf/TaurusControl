@@ -55,4 +55,12 @@ public class LoginController {
 
         new Thread(task).start();
     }
+
+    public List<Terminal> getTerminals() {
+        return terminalManager.getTerminals();
+    }
+
+    public void loginTerminalSync(String sn, String password) throws Exception {
+        terminalManager.loginTerminal(sn, password);
+    }
 }

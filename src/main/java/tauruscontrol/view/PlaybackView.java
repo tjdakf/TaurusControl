@@ -38,6 +38,7 @@ public class PlaybackView extends StackPane {
         this.terminalListContainer = new VBox();
         this.mediaListContainer = new VBox();
 
+        getStylesheets().add(getClass().getResource("/styles/common-styles.css").toExternalForm());
         getStylesheets().add(getClass().getResource("/styles/playback-view.css").toExternalForm());
 
         HBox mainLayout = new HBox(30);
@@ -109,7 +110,7 @@ public class PlaybackView extends StackPane {
         titleRow.setMaxHeight(35);
 
         Label title = new Label("터미널 목록");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-label");
 
         titleRow.getChildren().add(title);
 
@@ -135,11 +136,11 @@ public class PlaybackView extends StackPane {
         header.setPrefHeight(40);
 
         Label nameLabel = new Label("터미널 이름");
-        nameLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 13px; -fx-font-weight: bold;");
+        nameLabel.getStyleClass().add("header-label");
         nameLabel.setPrefWidth(200);
 
         Label resolutionLabel = new Label("해상도");
-        resolutionLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 13px; -fx-font-weight: bold;");
+        resolutionLabel.getStyleClass().add("header-label");
         resolutionLabel.setPrefWidth(150);
 
         header.getChildren().addAll(nameLabel, resolutionLabel);
@@ -171,7 +172,7 @@ public class PlaybackView extends StackPane {
         titleRow.setMaxHeight(35);
 
         Label title = new Label("미디어 목록");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-label");
 
         titleRow.getChildren().add(title);
 
@@ -228,7 +229,7 @@ public class PlaybackView extends StackPane {
         header.setPrefHeight(40);
 
         Label fileLabel = new Label("파일명");
-        fileLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 13px; -fx-font-weight: bold;");
+        fileLabel.getStyleClass().add("header-label");
         fileLabel.setPrefWidth(300);
 
         HBox buttonBox = createMediaButtons();
@@ -311,11 +312,11 @@ public class PlaybackView extends StackPane {
         });
 
         Label nameLabel = new Label(terminal.getAliasName());
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        nameLabel.getStyleClass().add("content-label");
         nameLabel.setPrefWidth(200);
 
         Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
-        resolutionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        resolutionLabel.getStyleClass().add("content-label");
         resolutionLabel.setPrefWidth(150);
 
         row.getChildren().addAll(nameLabel, resolutionLabel);
@@ -420,7 +421,7 @@ public class PlaybackView extends StackPane {
         });
 
         Label fileLabel = new Label(media.getFileName() + media.getExtension());
-        fileLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        fileLabel.getStyleClass().add("content-label");
         fileLabel.setPrefWidth(300);
 
         row.getChildren().add(fileLabel);

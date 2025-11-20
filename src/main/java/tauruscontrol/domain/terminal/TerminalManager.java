@@ -89,4 +89,11 @@ public class TerminalManager {
                         .thenComparing(Terminal::getAliasName))
                 .toList();
     }
+
+    public List<Terminal> getLoggedInTerminals() {
+        return terminals.stream()
+                .filter(Terminal::isLogined)
+                .sorted(Comparator.comparing(Terminal::getAliasName))
+                .toList();
+    }
 }

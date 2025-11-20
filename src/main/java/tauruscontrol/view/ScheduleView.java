@@ -352,29 +352,43 @@ public class ScheduleView extends StackPane {
         List<Terminal> terminals = terminalManager.getLoggedInTerminals();
 
         if (terminals.isEmpty()) {
-            selectedTerminal = null;
-            HBox messageRow = createNoTerminalMessageRow();
-            terminalListContainer.getChildren().add(messageRow);
-
-            for (int i = 1; i < 10; i++) {
-                HBox emptyRow = createEmptyTerminalRow(i);
-                terminalListContainer.getChildren().add(emptyRow);
-            }
+            renderEmptyTerminalList();
             return;
         }
 
+        updateSelectedTerminal(terminals);
+        loadSelectedTerminalData();
+        renderTerminalRows(terminals);
+    }
+
+    private void renderEmptyTerminalList() {
+        selectedTerminal = null;
+        HBox messageRow = createNoTerminalMessageRow();
+        terminalListContainer.getChildren().add(messageRow);
+
+        for (int i = 1; i < 10; i++) {
+            HBox emptyRow = createEmptyTerminalRow(i);
+            terminalListContainer.getChildren().add(emptyRow);
+        }
+    }
+
+    private void updateSelectedTerminal(List<Terminal> terminals) {
         boolean isSelectedTerminalInList = terminals.contains(selectedTerminal);
         if (!isSelectedTerminalInList) {
             selectedTerminal = terminals.get(0);
         }
+    }
 
+    private void loadSelectedTerminalData() {
         if (selectedTerminal != null) {
             boolean isFirstLoad = !controllers.containsKey(selectedTerminal);
             if (isFirstLoad) {
                 loadTerminalData(selectedTerminal);
             }
         }
+    }
 
+    private void renderTerminalRows(List<Terminal> terminals) {
         int terminalCount = Math.min(terminals.size(), 10);
         for (int i = 0; i < terminalCount; i++) {
             Terminal terminal = terminals.get(i);
@@ -389,6 +403,17 @@ public class ScheduleView extends StackPane {
     }
 
     private HBox createTerminalRow(Terminal terminal, int index) {
+        HBox row = createTerminalRowContainer(terminal, index);
+        setupTerminalRowClickHandler(row, terminal);
+
+        Label nameLabel = createTerminalNameLabel(terminal);
+        Label resolutionLabel = createTerminalResolutionLabel(terminal);
+
+        row.getChildren().addAll(nameLabel, resolutionLabel);
+        return row;
+    }
+
+    private HBox createTerminalRowContainer(Terminal terminal, int index) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(10));
@@ -396,16 +421,22 @@ public class ScheduleView extends StackPane {
         row.setPrefHeight(40);
         row.setFocusTraversable(false);
 
-        String bgColor = "#3a3a3a";
-        if (index % 2 == 1) {
-            bgColor = "#323232";
-        }
-        if (terminal.equals(selectedTerminal)) {
-            bgColor = "#1E88E5";
-        }
-
+        String bgColor = getTerminalRowBackgroundColor(terminal, index);
         row.setStyle("-fx-background-color: " + bgColor + "; -fx-cursor: hand;");
+        return row;
+    }
 
+    private String getTerminalRowBackgroundColor(Terminal terminal, int index) {
+        if (terminal.equals(selectedTerminal)) {
+            return "#1E88E5";
+        }
+        if (index % 2 == 1) {
+            return "#323232";
+        }
+        return "#3a3a3a";
+    }
+
+    private void setupTerminalRowClickHandler(HBox row, Terminal terminal) {
         row.setOnMouseClicked(event -> {
             boolean wasSelected = terminal.equals(selectedTerminal);
             selectedTerminal = terminal;
@@ -420,17 +451,20 @@ public class ScheduleView extends StackPane {
                 loadTerminalData(terminal);
             }
         });
+    }
 
+    private Label createTerminalNameLabel(Terminal terminal) {
         Label nameLabel = new Label(terminal.getAliasName());
         nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
         nameLabel.setPrefWidth(200);
+        return nameLabel;
+    }
 
+    private Label createTerminalResolutionLabel(Terminal terminal) {
         Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
         resolutionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
         resolutionLabel.setPrefWidth(150);
-
-        row.getChildren().addAll(nameLabel, resolutionLabel);
-        return row;
+        return resolutionLabel;
     }
 
     private HBox createNoTerminalMessageRow() {

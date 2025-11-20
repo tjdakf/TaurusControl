@@ -262,22 +262,33 @@ public class PlaybackView extends StackPane {
         List<Terminal> terminals = controller.getLoggedInTerminals();
 
         if (terminals.isEmpty()) {
-            selectedTerminal = null;
-            HBox messageRow = createNoTerminalMessageRow();
-            terminalListContainer.getChildren().add(messageRow);
-
-            for (int i = 1; i < 10; i++) {
-                HBox emptyRow = createEmptyTerminalRow(i);
-                terminalListContainer.getChildren().add(emptyRow);
-            }
+            renderEmptyTerminalList();
             return;
         }
 
+        updateSelectedTerminal(terminals);
+        renderTerminalRows(terminals);
+    }
+
+    private void renderEmptyTerminalList() {
+        selectedTerminal = null;
+        HBox messageRow = createNoTerminalMessageRow();
+        terminalListContainer.getChildren().add(messageRow);
+
+        for (int i = 1; i < 10; i++) {
+            HBox emptyRow = createEmptyTerminalRow(i);
+            terminalListContainer.getChildren().add(emptyRow);
+        }
+    }
+
+    private void updateSelectedTerminal(List<Terminal> terminals) {
         boolean isSelectedTerminalInList = terminals.contains(selectedTerminal);
         if (!isSelectedTerminalInList) {
             selectedTerminal = terminals.get(0);
         }
+    }
 
+    private void renderTerminalRows(List<Terminal> terminals) {
         int terminalCount = Math.min(terminals.size(), 10);
         for (int i = 0; i < terminalCount; i++) {
             Terminal terminal = terminals.get(i);

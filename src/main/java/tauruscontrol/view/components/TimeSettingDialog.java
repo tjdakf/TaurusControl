@@ -43,26 +43,14 @@ public class TimeSettingDialog extends StackPane {
         getStyleClass().add("dialog-overlay");
         setAlignment(Pos.CENTER);
 
-        VBox card = new VBox(UIConstants.SPACING_LARGE);
-        card.setMaxWidth(800);
-        card.setMaxHeight(350);
-        card.setPadding(new Insets(UIConstants.PANEL_GAP));
-        card.setAlignment(Pos.TOP_CENTER);
-        card.getStyleClass().add("dialog-card-large-dark");
+        this.onHourField = createTimeFieldWithMax(23);
+        this.onMinuteField = createTimeFieldWithMax(59);
+        this.offHourField = createTimeFieldWithMax(23);
+        this.offMinuteField = createTimeFieldWithMax(59);
+        setupArrowKeyHandlers();
 
-        Label title = new Label("시간 설정");
-        title.getStyleClass().add("dialog-title");
-
-        onHourField = createTimeFieldWithMax(23);
-        onMinuteField = createTimeFieldWithMax(59);
-        offHourField = createTimeFieldWithMax(23);
-        offMinuteField = createTimeFieldWithMax(59);
-
-        setupArrowKeyHandlers(onHourField, 23);
-        setupArrowKeyHandlers(onMinuteField, 59);
-        setupArrowKeyHandlers(offHourField, 23);
-        setupArrowKeyHandlers(offMinuteField, 59);
-
+        VBox card = createDialogCard();
+        Label title = createTitleLabel();
         HBox onTimeRow = createTimeRow("ON", selectedDaysOn, dayButtonsOn, onHourField, onMinuteField, existingOn);
         HBox offTimeRow = createTimeRow("OFF", selectedDaysOff, dayButtonsOff, offHourField, offMinuteField, existingOff);
 
@@ -70,26 +58,62 @@ public class TimeSettingDialog extends StackPane {
             syncDays(true);
         }
 
+        HBox buttonBox = createButtonBox(onCancel);
+        card.getChildren().addAll(title, onTimeRow, offTimeRow, buttonBox);
+        getChildren().add(card);
+
+        setupDialogEventHandlers(card, onCancel, (Button) buttonBox.getChildren().get(1));
+    }
+
+    private void setupArrowKeyHandlers() {
+        setupArrowKeyHandlers(onHourField, 23);
+        setupArrowKeyHandlers(onMinuteField, 59);
+        setupArrowKeyHandlers(offHourField, 23);
+        setupArrowKeyHandlers(offMinuteField, 59);
+    }
+
+    private VBox createDialogCard() {
+        VBox card = new VBox(UIConstants.SPACING_LARGE);
+        card.setMaxWidth(800);
+        card.setMaxHeight(350);
+        card.setPadding(new Insets(UIConstants.PANEL_GAP));
+        card.setAlignment(Pos.TOP_CENTER);
+        card.getStyleClass().add("dialog-card-large-dark");
+        return card;
+    }
+
+    private Label createTitleLabel() {
+        Label title = new Label("시간 설정");
+        title.getStyleClass().add("dialog-title");
+        return title;
+    }
+
+    private HBox createButtonBox(Runnable onCancel) {
         HBox buttonBox = new HBox(UIConstants.SPACING_MEDIUM);
         buttonBox.setAlignment(Pos.CENTER);
 
         Button confirmButton = new Button("확인");
         confirmButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
         confirmButton.getStyleClass().add("dialog-button-primary");
+        confirmButton.setOnAction(e -> handleConfirm());
 
         Button cancelButton = new Button("취소");
         cancelButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
         cancelButton.getStyleClass().add("dialog-button-secondary");
-
-        confirmButton.setOnAction(e -> handleConfirm());
-
         cancelButton.setOnAction(e -> onCancel.run());
 
         buttonBox.getChildren().addAll(confirmButton, cancelButton);
+        return buttonBox;
+    }
 
-        card.getChildren().addAll(title, onTimeRow, offTimeRow, buttonBox);
-        getChildren().add(card);
+    private void setupDialogEventHandlers(VBox card, Runnable onCancel, Button cancelButton) {
+        setupCardEventHandlers(card, onCancel);
+        setupTabNavigation(cancelButton);
+        setupEnterKeyHandler();
+        setupSceneListeners();
+    }
 
+    private void setupCardEventHandlers(VBox card, Runnable onCancel) {
         card.setOnMouseClicked(e -> {
             this.requestFocus();
             e.consume();
@@ -108,7 +132,9 @@ public class TimeSettingDialog extends StackPane {
 
         setFocusTraversable(true);
         javafx.application.Platform.runLater(this::requestFocus);
+    }
 
+    private void setupTabNavigation(Button cancelButton) {
         cancelButton.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == javafx.scene.input.KeyCode.TAB && !event.isShiftDown()) {
                 onHourField.requestFocus();
@@ -122,7 +148,9 @@ public class TimeSettingDialog extends StackPane {
                 event.consume();
             }
         });
+    }
 
+    private void setupEnterKeyHandler() {
         sceneKeyHandler = event -> {
             if (!isVisible()) {
                 return;
@@ -144,7 +172,9 @@ public class TimeSettingDialog extends StackPane {
                 event.consume();
             }
         };
+    }
 
+    private void setupSceneListeners() {
         sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (oldScene != null && sceneKeyHandler != null) {
                 oldScene.removeEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, sceneKeyHandler);
@@ -162,44 +192,56 @@ public class TimeSettingDialog extends StackPane {
     }
 
     private void handleConfirm() {
-        Set<Integer> onDays = getDaysFromSelection(selectedDaysOn);
-        if (onDays.isEmpty()) {
-            onDays = new HashSet<>();
-            for (int i = 1; i <= 7; i++) {
-                onDays.add(i);
-            }
-        }
-
-        Set<Integer> offDays = getDaysFromSelection(selectedDaysOff);
-        if (offDays.isEmpty()) {
-            offDays = new HashSet<>();
-            for (int i = 1; i <= 7; i++) {
-                offDays.add(i);
-            }
-        }
+        Set<Integer> onDays = getValidatedDays(selectedDaysOn);
+        Set<Integer> offDays = getValidatedDays(selectedDaysOff);
 
         int onHour = parseTime(onHourField.getText());
         int onMinute = parseTime(onMinuteField.getText());
         int offHour = parseTime(offHourField.getText());
         int offMinute = parseTime(offMinuteField.getText());
 
-        int onTotalMinutes = onHour * 60 + onMinute;
-        int offTotalMinutes = offHour * 60 + offMinute;
-
-        if (onTotalMinutes >= offTotalMinutes) {
-            showError("ON 시간이 OFF 시간보다\n빠르거나 같을 수 없습니다.");
+        if (!validateTimeOrder(onHour, onMinute, offHour, offMinute)) {
             return;
         }
 
         ScheduleTime onTime = new ScheduleTime(onHour, onMinute, onDays);
         ScheduleTime offTime = new ScheduleTime(offHour, offMinute, offDays);
 
-        if (ScheduleHelper.hasTimeConflict(onTime, offTime)) {
-            showError("ON과 OFF 시간이 같은 요일에\n중복될 수 없습니다.");
+        if (!validateNoTimeConflict(onTime, offTime)) {
             return;
         }
 
         onConfirmCallback.accept(onTime, offTime);
+    }
+
+    private Set<Integer> getValidatedDays(Set<Integer> selectedDays) {
+        Set<Integer> days = getDaysFromSelection(selectedDays);
+        if (days.isEmpty()) {
+            days = new HashSet<>();
+            for (int i = 1; i <= 7; i++) {
+                days.add(i);
+            }
+        }
+        return days;
+    }
+
+    private boolean validateTimeOrder(int onHour, int onMinute, int offHour, int offMinute) {
+        int onTotalMinutes = onHour * 60 + onMinute;
+        int offTotalMinutes = offHour * 60 + offMinute;
+
+        if (onTotalMinutes >= offTotalMinutes) {
+            showError("ON 시간이 OFF 시간보다\n빠르거나 같을 수 없습니다.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateNoTimeConflict(ScheduleTime onTime, ScheduleTime offTime) {
+        if (ScheduleHelper.hasTimeConflict(onTime, offTime)) {
+            showError("ON과 OFF 시간이 같은 요일에\n중복될 수 없습니다.");
+            return false;
+        }
+        return true;
     }
 
     private void showError(String message) {
@@ -207,10 +249,21 @@ public class TimeSettingDialog extends StackPane {
             return;
         }
 
-        errorOverlay = new StackPane();
-        errorOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
-        errorOverlay.setAlignment(Pos.CENTER);
+        errorOverlay = createErrorOverlay(message);
+        getChildren().add(errorOverlay);
+    }
 
+    private StackPane createErrorOverlay(String message) {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);");
+        overlay.setAlignment(Pos.CENTER);
+
+        VBox errorBox = createErrorBox(message);
+        overlay.getChildren().add(errorBox);
+        return overlay;
+    }
+
+    private VBox createErrorBox(String message) {
         VBox errorBox = new VBox(15);
         errorBox.setAlignment(Pos.CENTER);
         errorBox.setPrefSize(300, UIConstants.DIALOG_MEDIUM_HEIGHT);
@@ -228,6 +281,12 @@ public class TimeSettingDialog extends StackPane {
         errorLabel.getStyleClass().add("dialog-message-large");
         errorLabel.setWrapText(true);
 
+        Button okButton = createErrorOkButton();
+        errorBox.getChildren().addAll(errorLabel, okButton);
+        return errorBox;
+    }
+
+    private Button createErrorOkButton() {
         Button okButton = new Button("확인");
         okButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
         okButton.getStyleClass().add("dialog-button-primary");
@@ -235,13 +294,17 @@ public class TimeSettingDialog extends StackPane {
             getChildren().remove(errorOverlay);
             errorOverlay = null;
         });
-
-        errorBox.getChildren().addAll(errorLabel, okButton);
-        errorOverlay.getChildren().add(errorBox);
-        getChildren().add(errorOverlay);
+        return okButton;
     }
 
     private TextField createTimeFieldWithMax(int max) {
+        TextField field = createBasicTimeField();
+        setupTimeFieldFocusListener(field, max);
+        setupTimeFieldTextListener(field, max);
+        return field;
+    }
+
+    private TextField createBasicTimeField() {
         TextField field = new TextField("00");
         field.setPrefWidth(60);
         field.setAlignment(javafx.geometry.Pos.CENTER);
@@ -255,7 +318,10 @@ public class TimeSettingDialog extends StackPane {
             "-fx-border-radius: 8;" +
             "-fx-background-radius: 8;"
         );
+        return field;
+    }
 
+    private void setupTimeFieldFocusListener(TextField field, int max) {
         field.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
                 javafx.application.Platform.runLater(field::selectAll);
@@ -272,7 +338,9 @@ public class TimeSettingDialog extends StackPane {
                 }
             }
         });
+    }
 
+    private void setupTimeFieldTextListener(TextField field, int max) {
         field.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*")) {
                 javafx.application.Platform.runLater(() -> field.setText(oldVal));
@@ -284,37 +352,43 @@ public class TimeSettingDialog extends StackPane {
             }
 
             if (newVal.length() > 2) {
-                String lastTwoDigits = newVal.substring(newVal.length() - 2);
-                int lastTwoValue = Integer.parseInt(lastTwoDigits);
-
-                if (lastTwoValue <= max) {
-                    javafx.application.Platform.runLater(() -> {
-                        field.setText(lastTwoDigits);
-                        field.positionCaret(field.getText().length());
-                    });
-                } else {
-                    String lastChar = newVal.substring(newVal.length() - 1);
-                    int lastDigit = Integer.parseInt(lastChar);
-                    javafx.application.Platform.runLater(() -> {
-                        field.setText(String.format("%02d", lastDigit));
-                        field.positionCaret(field.getText().length());
-                    });
-                }
+                handleOverflowInput(field, newVal, max);
                 return;
             }
 
-            int value = Integer.parseInt(newVal);
-            if (value > max) {
-                String lastChar = newVal.substring(newVal.length() - 1);
-                int lastDigit = Integer.parseInt(lastChar);
-                javafx.application.Platform.runLater(() -> {
-                    field.setText(String.format("%02d", lastDigit));
-                    field.positionCaret(field.getText().length());
-                });
-            }
+            handleNormalInput(field, newVal, max);
         });
+    }
 
-        return field;
+    private void handleOverflowInput(TextField field, String newVal, int max) {
+        String lastTwoDigits = newVal.substring(newVal.length() - 2);
+        int lastTwoValue = Integer.parseInt(lastTwoDigits);
+
+        if (lastTwoValue <= max) {
+            javafx.application.Platform.runLater(() -> {
+                field.setText(lastTwoDigits);
+                field.positionCaret(field.getText().length());
+            });
+        } else {
+            String lastChar = newVal.substring(newVal.length() - 1);
+            int lastDigit = Integer.parseInt(lastChar);
+            javafx.application.Platform.runLater(() -> {
+                field.setText(String.format("%02d", lastDigit));
+                field.positionCaret(field.getText().length());
+            });
+        }
+    }
+
+    private void handleNormalInput(TextField field, String newVal, int max) {
+        int value = Integer.parseInt(newVal);
+        if (value > max) {
+            String lastChar = newVal.substring(newVal.length() - 1);
+            int lastDigit = Integer.parseInt(lastChar);
+            javafx.application.Platform.runLater(() -> {
+                field.setText(String.format("%02d", lastDigit));
+                field.positionCaret(field.getText().length());
+            });
+        }
     }
 
     private void setupArrowKeyHandlers(TextField field, int max) {
@@ -346,13 +420,28 @@ public class TimeSettingDialog extends StackPane {
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(0, 0, 0, 20));
 
-        Label actionLabel = new Label(label);
-        actionLabel.setPrefWidth(40);
-        actionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
-
+        Label actionLabel = createActionLabel(label);
         boolean isOnRow = label.equals("ON");
         HBox dayButtonBox = createDayButtons(selectedDays, dayButtons, isOnRow);
 
+        initializeExistingTime(hourField, minuteField, selectedDays, dayButtons, existingTime);
+
+        HBox timeBox = createTimeSelector(hourField, minuteField);
+
+        row.getChildren().addAll(actionLabel, dayButtonBox, timeBox);
+        return row;
+    }
+
+    private Label createActionLabel(String label) {
+        Label actionLabel = new Label(label);
+        actionLabel.setPrefWidth(40);
+        actionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        return actionLabel;
+    }
+
+    private void initializeExistingTime(TextField hourField, TextField minuteField,
+                                        Set<Integer> selectedDays, List<Button> dayButtons,
+                                        ScheduleTime existingTime) {
         if (existingTime != null) {
             hourField.setText(String.format("%02d", existingTime.getHour()));
             minuteField.setText(String.format("%02d", existingTime.getMinute()));
@@ -366,36 +455,37 @@ public class TimeSettingDialog extends StackPane {
             }
             updateDayButtonStates(selectedDays, dayButtons);
         }
+    }
 
+    private HBox createTimeSelector(TextField hourField, TextField minuteField) {
         HBox timeBox = new HBox(5);
         timeBox.setAlignment(Pos.CENTER_LEFT);
 
-        VBox hourBox = new VBox(2);
-        hourBox.setAlignment(Pos.CENTER);
-        Button hourUp = createSpinnerButton("▲", hourField, 23);
-        Button hourDown = createSpinnerButton("▼", hourField, 23);
-        hourUp.setFocusTraversable(false);
-        hourDown.setFocusTraversable(false);
-        hourBox.getChildren().addAll(hourUp, hourField, hourDown);
+        VBox hourBox = createSpinnerBox(hourField, 23);
+        Label hourLabel = createTimeLabel("시");
 
-        Label hourLabel = new Label("시");
-        hourLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
-
-        VBox minuteBox = new VBox(2);
-        minuteBox.setAlignment(Pos.CENTER);
-        Button minuteUp = createSpinnerButton("▲", minuteField, 59);
-        Button minuteDown = createSpinnerButton("▼", minuteField, 59);
-        minuteUp.setFocusTraversable(false);
-        minuteDown.setFocusTraversable(false);
-        minuteBox.getChildren().addAll(minuteUp, minuteField, minuteDown);
-
-        Label minuteLabel = new Label("분");
-        minuteLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        VBox minuteBox = createSpinnerBox(minuteField, 59);
+        Label minuteLabel = createTimeLabel("분");
 
         timeBox.getChildren().addAll(hourBox, hourLabel, minuteBox, minuteLabel);
+        return timeBox;
+    }
 
-        row.getChildren().addAll(actionLabel, dayButtonBox, timeBox);
-        return row;
+    private VBox createSpinnerBox(TextField field, int max) {
+        VBox box = new VBox(2);
+        box.setAlignment(Pos.CENTER);
+        Button upButton = createSpinnerButton("▲", field, max);
+        Button downButton = createSpinnerButton("▼", field, max);
+        upButton.setFocusTraversable(false);
+        downButton.setFocusTraversable(false);
+        box.getChildren().addAll(upButton, field, downButton);
+        return box;
+    }
+
+    private Label createTimeLabel(String text) {
+        Label label = new Label(text);
+        label.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        return label;
     }
 
     private HBox createDayButtons(Set<Integer> selectedDays, List<Button> dayButtons, boolean isOnRow) {

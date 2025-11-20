@@ -184,6 +184,17 @@ public class LoginView extends StackPane {
     }
 
     private HBox createTerminalRow(Terminal terminal, int index) {
+        HBox row = createRowContainer(index);
+        HBox statusBox = createStatusIndicator(terminal);
+        Label nameLabel = createNameLabel(terminal);
+        Label resolutionLabel = createResolutionLabel(terminal);
+        HBox actionBox = createActionBox(terminal);
+
+        row.getChildren().addAll(statusBox, nameLabel, resolutionLabel, actionBox);
+        return row;
+    }
+
+    private HBox createRowContainer(int index) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(UIConstants.SPACING_MEDIUM));
@@ -198,16 +209,19 @@ public class LoginView extends StackPane {
         } else {
             row.setStyle("-fx-background-color: #323232;");
         }
+        return row;
+    }
 
-        // 상태 표시등 - 60px
+    private HBox createStatusIndicator(Terminal terminal) {
         Circle statusCircle = new Circle(8);
         if (terminal.isLoginedByThisApp()) {
-            statusCircle.setFill(Color.LIMEGREEN);  // 이 앱에서 로그인됨
+            statusCircle.setFill(Color.LIMEGREEN);
         } else if (terminal.isLoginedByOtherDevice()) {
-            statusCircle.setFill(Color.YELLOW);  // 다른 장치에서 로그인됨
+            statusCircle.setFill(Color.YELLOW);
         } else {
-            statusCircle.setFill(Color.GRAY);  // 로그인 안됨
+            statusCircle.setFill(Color.GRAY);
         }
+
         HBox statusBox = new HBox(statusCircle);
         statusBox.setAlignment(Pos.CENTER);
         statusBox.setMinWidth(UIConstants.STATUS_WIDTH);
@@ -215,8 +229,10 @@ public class LoginView extends StackPane {
         statusBox.setMaxWidth(UIConstants.STATUS_WIDTH);
         statusBox.setMinHeight(0);
         statusBox.setMaxHeight(Double.MAX_VALUE);
+        return statusBox;
+    }
 
-        // 터미널 이름 - 늘어남
+    private Label createNameLabel(Terminal terminal) {
         Label nameLabel = new Label(terminal.getAliasName());
         nameLabel.getStyleClass().add("content-label");
         nameLabel.setMinWidth(300);
@@ -224,9 +240,10 @@ public class LoginView extends StackPane {
         nameLabel.setMaxWidth(300);
         nameLabel.setMinHeight(0);
         nameLabel.setMaxHeight(Double.MAX_VALUE);
+        return nameLabel;
+    }
 
-
-        // 해상도 - 150px (20px 패딩 포함)
+    private Label createResolutionLabel(Terminal terminal) {
         Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
         resolutionLabel.getStyleClass().add("content-label");
         resolutionLabel.setStyle("-fx-padding: 0 0 0 20;");
@@ -235,8 +252,10 @@ public class LoginView extends StackPane {
         resolutionLabel.setMaxWidth(250);
         resolutionLabel.setMinHeight(0);
         resolutionLabel.setMaxHeight(Double.MAX_VALUE);
+        return resolutionLabel;
+    }
 
-        // 로그인 버튼 - 100px
+    private HBox createActionBox(Terminal terminal) {
         HBox actionBox = new HBox();
         actionBox.setMinWidth(UIConstants.ACTION_WIDTH);
         actionBox.setPrefWidth(UIConstants.ACTION_WIDTH);
@@ -246,24 +265,25 @@ public class LoginView extends StackPane {
         actionBox.setMaxHeight(Double.MAX_VALUE);
 
         if (!terminal.isLoginedByThisApp()) {
-            Button loginButton = new Button("로그인");
-            loginButton.setPrefWidth(UIConstants.BUTTON_SMALL);
-            loginButton.getStyleClass().add("login-button");
-            loginButton.setFocusTraversable(false);
-            loginButton.setOnAction(event -> {
-                if (terminal.hasPassword()) {
-                    // 비밀번호가 저장되어 있으면 바로 로그인
-                    handleLogin(terminal, terminal.getPassword());
-                } else {
-                    // 비밀번호가 없으면 다이얼로그 표시
-                    showPasswordDialog(terminal);
-                }
-            });
+            Button loginButton = createLoginButton(terminal);
             actionBox.getChildren().add(loginButton);
         }
+        return actionBox;
+    }
 
-        row.getChildren().addAll(statusBox, nameLabel, resolutionLabel, actionBox);
-        return row;
+    private Button createLoginButton(Terminal terminal) {
+        Button loginButton = new Button("로그인");
+        loginButton.setPrefWidth(UIConstants.BUTTON_SMALL);
+        loginButton.getStyleClass().add("login-button");
+        loginButton.setFocusTraversable(false);
+        loginButton.setOnAction(event -> {
+            if (terminal.hasPassword()) {
+                handleLogin(terminal, terminal.getPassword());
+            } else {
+                showPasswordDialog(terminal);
+            }
+        });
+        return loginButton;
     }
 
     private HBox createEmptyRow(int index) {

@@ -1,0 +1,246 @@
+/* Dialog Components Styles */
+
+/* Overlay background for all dialogs */
+.dialog-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Small dialog card (Progress, Error, Success) */
+.dialog-card-small {
+    -fx-background-color: #2a2a2a;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+
+/* Large dialog card (Password, TimeSettings, Reboot, Brightness) */
+.dialog-card-large {
+    -fx-background-color: #5a5a5a;
+    -fx-background-radius: 10;
+    -fx-border-color: #999999;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+
+/* Alternative large dialog card (dark variant) */
+.dialog-card-large-dark {
+    -fx-background-color: #2a2a2a;
+    -fx-background-radius: 10;
+    -fx-border-color: #999999;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+
+/* Dialog title labels */
+.dialog-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-title-large {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.dialog-title-error {
+    -fx-text-fill: #ff6b6b;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-title-success {
+    -fx-text-fill: #1E88E5;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Dialog message labels */
+.dialog-message {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-text-alignment: center;
+}
+
+.dialog-message-large {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+/* Dialog input fields */
+.dialog-input-field {
+    -fx-background-color: #323232;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* Password field with toggle button padding */
+.dialog-password-field {
+    -fx-background-color: #323232;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-padding: 10 40 10 10;
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* Dialog buttons - primary */
+.dialog-button-primary {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.dialog-button-primary:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* Dialog buttons - secondary (cancel) */
+.dialog-button-secondary {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.dialog-button-secondary:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+/* Dialog buttons with border (PasswordDialog style) */
+.dialog-button-primary-bordered {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: 'System';
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.dialog-button-primary-bordered:hover {
+    -fx-background-color: #1976D2;
+}
+
+.dialog-button-secondary-bordered {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: 'System';
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.dialog-button-secondary-bordered:hover {
+    -fx-background-color: #323232;
+}
+
+/* Toggle button (password visibility) */
+.dialog-toggle-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+/* Day selector buttons (TimeSettingDialog, RebootScheduleDialog) */
+.day-button {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.day-button:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+.day-button-selected {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.day-button-selected:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* Spinner buttons (up/down arrows) */
+.spinner-button {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-background-radius: 3;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.spinner-button:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+/* Time input fields (smaller, centered) */
+.time-input-field {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-alignment: center;
+    -fx-background-radius: 5;
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.time-input-field:focused {
+    -fx-border-color: #1E88E5;
+    -fx-border-width: 2;
+}
+
+/* Label in time row (ON/OFF) */
+.time-row-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Colon separator in time input */
+.time-separator {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Progress percentage label */
+.progress-percent-label {
+    -fx-text-fill: #1E88E5;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}

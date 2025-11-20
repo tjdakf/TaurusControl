@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import tauruscontrol.domain.terminal.Terminal;
+import tauruscontrol.util.UIConstants;
 
 import java.util.function.BiConsumer;
 
@@ -23,24 +24,18 @@ public class PasswordDialog extends StackPane {
         this.onConfirm = onConfirm;
         this.onCancel = onCancel;
 
-        setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        getStylesheets().add(getClass().getResource("/styles/dialog-components.css").toExternalForm());
+        getStyleClass().add("dialog-overlay");
 
-        VBox card = new VBox(20);
+        VBox card = new VBox(UIConstants.SPACING_LARGE);
         card.setAlignment(Pos.CENTER);
-        card.setPrefSize(350, 200);
-        card.setMaxSize(350, 200);
-        card.setStyle(
-                "-fx-background-color: #5a5a5a;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-border-color: #999999;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
-        );
-        card.setPadding(new Insets(30));
+        card.setPrefSize(UIConstants.DIALOG_LARGE_WIDTH, UIConstants.DIALOG_LARGE_HEIGHT);
+        card.setMaxSize(UIConstants.DIALOG_LARGE_WIDTH, UIConstants.DIALOG_LARGE_HEIGHT);
+        card.getStyleClass().add("dialog-card-large");
+        card.setPadding(new Insets(UIConstants.PANEL_GAP));
 
         Label titleLabel = new Label(terminal.getAliasName() + " 로그인");
-        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("dialog-title");
 
         // 비밀번호 필드와 토글 버튼을 담을 컨테이너
         StackPane passwordContainer = new StackPane();
@@ -49,32 +44,12 @@ public class PasswordDialog extends StackPane {
         passwordField = new PasswordField();
         passwordField.setPromptText("비밀번호");
         passwordField.setPrefWidth(290);
-        passwordField.setStyle(
-                "-fx-background-color: #323232;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-prompt-text-fill: #888888;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-padding: 10 40 10 10;" +
-                        "-fx-border-color: #6a6a6a;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-background-radius: 5;"
-        );
+        passwordField.getStyleClass().add("dialog-password-field");
 
         TextField textField = new TextField();
         textField.setPromptText("비밀번호");
         textField.setPrefWidth(290);
-        textField.setStyle(
-                "-fx-background-color: #323232;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-prompt-text-fill: #888888;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-padding: 10 40 10 10;" +
-                        "-fx-border-color: #6a6a6a;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-background-radius: 5;"
-        );
+        textField.getStyleClass().add("dialog-password-field");
         textField.setVisible(false);
         textField.setManaged(false);
 
@@ -84,15 +59,9 @@ public class PasswordDialog extends StackPane {
         // 토글 버튼
         Button toggleButton = new Button("👁");
         toggleButton.setPrefSize(30, 30);
-        toggleButton.setStyle(
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill: #cccccc;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-border-width: 0;"
-        );
+        toggleButton.getStyleClass().add("dialog-toggle-button");
         StackPane.setAlignment(toggleButton, Pos.CENTER_RIGHT);
-        StackPane.setMargin(toggleButton, new Insets(0, 5, 0, 0));
+        StackPane.setMargin(toggleButton, new Insets(0, UIConstants.SPACING_SMALL, 0, 0));
 
         toggleButton.setOnMousePressed(event -> {
             passwordField.setVisible(false);
@@ -110,14 +79,16 @@ public class PasswordDialog extends StackPane {
 
         passwordContainer.getChildren().addAll(passwordField, textField, toggleButton);
 
-        HBox buttonBox = new HBox(10);
+        HBox buttonBox = new HBox(UIConstants.SPACING_MEDIUM);
         buttonBox.setAlignment(Pos.CENTER);
 
         Button confirmButton = new Button("확인");
         Button cancelButton = new Button("취소");
 
-        styleDialogButton(confirmButton, true);
-        styleDialogButton(cancelButton, false);
+        confirmButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
+        cancelButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
+        confirmButton.getStyleClass().add("dialog-button-primary-bordered");
+        cancelButton.getStyleClass().add("dialog-button-secondary-bordered");
 
         confirmButton.setOnAction(event -> {
             String password = passwordField.getText();
@@ -137,47 +108,5 @@ public class PasswordDialog extends StackPane {
 
         // 다이얼로그가 렌더링된 후 포커스 설정
         javafx.application.Platform.runLater(() -> passwordField.requestFocus());
-    }
-
-    private void styleDialogButton(Button button, boolean isPrimary) {
-        button.setPrefWidth(100);
-        String bgColor = isPrimary ? "#1E88E5" : "#5a5a5a";
-        String hoverColor = isPrimary ? "#1976D2" : "#323232";
-
-        button.setStyle(
-                "-fx-background-color: " + bgColor + ";" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-font-family: 'System';" +
-                        "-fx-border-color: #6a6a6a;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-cursor: hand;"
-        );
-
-        button.setOnMouseEntered(e -> button.setStyle(
-                "-fx-background-color: " + hoverColor + ";" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-font-family: 'System';" +
-                        "-fx-border-color: #6a6a6a;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-cursor: hand;"
-        ));
-
-        button.setOnMouseExited(e -> button.setStyle(
-                "-fx-background-color: " + bgColor + ";" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-font-family: 'System';" +
-                        "-fx-border-color: #6a6a6a;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-cursor: hand;"
-        ));
     }
 }

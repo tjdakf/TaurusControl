@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import tauruscontrol.util.ScheduleHelper;
+import tauruscontrol.util.UIConstants;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,25 +39,19 @@ public class TimeSettingDialog extends StackPane {
     public TimeSettingDialog(ScheduleTime existingOn, ScheduleTime existingOff,
                             BiConsumer<ScheduleTime, ScheduleTime> onConfirm, Runnable onCancel) {
         this.onConfirmCallback = onConfirm;
-        setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        getStylesheets().add(getClass().getResource("/styles/dialog-components.css").toExternalForm());
+        getStyleClass().add("dialog-overlay");
         setAlignment(Pos.CENTER);
 
-        VBox card = new VBox(20);
+        VBox card = new VBox(UIConstants.SPACING_LARGE);
         card.setMaxWidth(800);
         card.setMaxHeight(350);
-        card.setPadding(new Insets(30));
+        card.setPadding(new Insets(UIConstants.PANEL_GAP));
         card.setAlignment(Pos.TOP_CENTER);
-        card.setStyle(
-            "-fx-background-color: #2a2a2a;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-color: #999999;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 10;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
-        );
+        card.getStyleClass().add("dialog-card-large-dark");
 
         Label title = new Label("시간 설정");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        title.getStyleClass().add("dialog-title");
 
         onHourField = createTimeFieldWithMax(23);
         onMinuteField = createTimeFieldWithMax(59);
@@ -75,56 +70,16 @@ public class TimeSettingDialog extends StackPane {
             syncDays(true);
         }
 
-        HBox buttonBox = new HBox(10);
+        HBox buttonBox = new HBox(UIConstants.SPACING_MEDIUM);
         buttonBox.setAlignment(Pos.CENTER);
 
         Button confirmButton = new Button("확인");
-        confirmButton.setPrefWidth(100);
-        confirmButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
-        confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
-            "-fx-background-color: #1976D2;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
-        confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
+        confirmButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
+        confirmButton.getStyleClass().add("dialog-button-primary");
 
         Button cancelButton = new Button("취소");
-        cancelButton.setPrefWidth(100);
-        cancelButton.setStyle(
-            "-fx-background-color: #5a5a5a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
-        cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
-            "-fx-background-color: #4a4a4a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
-        cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
-            "-fx-background-color: #5a5a5a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
+        cancelButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
+        cancelButton.getStyleClass().add("dialog-button-secondary");
 
         confirmButton.setOnAction(e -> handleConfirm());
 
@@ -258,8 +213,8 @@ public class TimeSettingDialog extends StackPane {
 
         VBox errorBox = new VBox(15);
         errorBox.setAlignment(Pos.CENTER);
-        errorBox.setPrefSize(300, 150);
-        errorBox.setMaxSize(300, 150);
+        errorBox.setPrefSize(300, UIConstants.DIALOG_MEDIUM_HEIGHT);
+        errorBox.setMaxSize(300, UIConstants.DIALOG_MEDIUM_HEIGHT);
         errorBox.setStyle(
             "-fx-background-color: #2a2a2a;" +
             "-fx-background-radius: 10;" +
@@ -270,18 +225,12 @@ public class TimeSettingDialog extends StackPane {
         );
 
         Label errorLabel = new Label(message);
-        errorLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-text-alignment: center;");
+        errorLabel.getStyleClass().add("dialog-message-large");
         errorLabel.setWrapText(true);
 
         Button okButton = new Button("확인");
-        okButton.setPrefWidth(100);
-        okButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
+        okButton.setPrefWidth(UIConstants.BUTTON_MEDIUM);
+        okButton.getStyleClass().add("dialog-button-primary");
         okButton.setOnAction(e -> {
             getChildren().remove(errorOverlay);
             errorOverlay = null;
@@ -302,6 +251,7 @@ public class TimeSettingDialog extends StackPane {
             "-fx-font-size: 16px;" +
             "-fx-font-weight: bold;" +
             "-fx-border-color: #6a6a6a;" +
+            "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
             "-fx-background-radius: 8;"
         );
@@ -465,7 +415,7 @@ public class TimeSettingDialog extends StackPane {
             Button button = new Button(labels[i]);
             button.setPrefWidth(i < 3 ? 55 : 40);
             button.setPrefHeight(40);
-            button.setStyle(buildDayButtonStyle(false));
+            button.getStyleClass().add("day-button");
             button.setFocusTraversable(false);
 
             button.setOnAction(e -> {
@@ -530,23 +480,11 @@ public class TimeSettingDialog extends StackPane {
                 shouldHighlight = selectedDays.contains(dayMaps[i][0]);
             }
 
-            dayButtons.get(i).setStyle(buildDayButtonStyle(shouldHighlight));
+            Button button = dayButtons.get(i);
+            button.getStyleClass().remove("day-button");
+            button.getStyleClass().remove("day-button-selected");
+            button.getStyleClass().add(shouldHighlight ? "day-button-selected" : "day-button");
         }
-    }
-
-    private String buildDayButtonStyle(boolean selected) {
-        String bgColor = selected ? "#1E88E5" : "#3a3a3a";
-        return String.format(
-            "-fx-background-color: %s;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-color: #6a6a6a;" +
-            "-fx-border-radius: 10;" +
-            "-fx-cursor: hand;",
-            bgColor
-        );
     }
 
     private void syncDays(boolean fromOnRow) {

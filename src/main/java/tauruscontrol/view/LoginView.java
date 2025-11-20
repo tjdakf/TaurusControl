@@ -30,6 +30,7 @@ public class LoginView extends StackPane {
         this.controller = controller;
 
         // CSS 로드
+        getStylesheets().add(getClass().getResource("/styles/common-styles.css").toExternalForm());
         getStylesheets().add(getClass().getResource("/styles/login-view.css").toExternalForm());
 
         // 로딩 박스
@@ -157,14 +158,15 @@ public class LoginView extends StackPane {
 
         // 터미널 이름 - 늘어남
         Label nameLabel = new Label("터미널 이름");
-        nameLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-font-family: 'System';");
+        nameLabel.getStyleClass().add("header-label");
         nameLabel.setMinWidth(300);
         nameLabel.setPrefWidth(300);
         nameLabel.setMaxWidth(300);
 
         // 해상도 - 고정 150px (20px 패딩 포함)
         Label resolutionLabel = new Label("해상도");
-        resolutionLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-padding: 0 0 0 20;");
+        resolutionLabel.getStyleClass().add("header-label");
+        resolutionLabel.setStyle("-fx-padding: 0 0 0 20;");
         resolutionLabel.setMinWidth(250);
         resolutionLabel.setPrefWidth(250);
         resolutionLabel.setMaxWidth(250);
@@ -214,7 +216,7 @@ public class LoginView extends StackPane {
 
         // 터미널 이름 - 늘어남
         Label nameLabel = new Label(terminal.getAliasName());
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: 'System';");
+        nameLabel.getStyleClass().add("content-label");
         nameLabel.setMinWidth(300);
         nameLabel.setPrefWidth(300);
         nameLabel.setMaxWidth(300);
@@ -224,7 +226,8 @@ public class LoginView extends StackPane {
 
         // 해상도 - 150px (20px 패딩 포함)
         Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
-        resolutionLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: 'System'; -fx-padding: 0 0 0 20;");
+        resolutionLabel.getStyleClass().add("content-label");
+        resolutionLabel.setStyle("-fx-padding: 0 0 0 20;");
         resolutionLabel.setMinWidth(250);
         resolutionLabel.setPrefWidth(250);
         resolutionLabel.setMaxWidth(250);

@@ -9,6 +9,8 @@ import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
+import java.util.function.Consumer;
+
 public class ProgramManager {
     private static final String PROGRAM_OUTPUT_PATH = "temp/program";
 
@@ -58,25 +60,32 @@ public class ProgramManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void publishProgram(Terminal terminal, MediaManager mediaManager) {
+    public void publishProgram(Terminal terminal, MediaManager mediaManager, Consumer<Integer> onProgress) {
+        callbackException = null;
+
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code == 65362) {
                     JSONObject obj = new JSONObject(data);
-                    System.out.printf("프로그램 전송 진행률: %d%%\n",
-                            (obj.getLong("m_curBytes") * 100) / obj.getLong("m_totalBytes"));
+                    int progress = (int) ((obj.getLong("m_curBytes") * 100) / obj.getLong("m_totalBytes"));
+                    if (onProgress != null) {
+                        onProgress.accept(progress);
+                    }
                     return;
                 }
 
                 if (code == 0) {
-                    System.out.println("프로그램 전송 완료");
+                    AsyncHelper.setApiReturn(true);
                     return;
                 }
 
-                // 나머지 코드 예외 처리
-                throw new RuntimeException(code + ": " + data);
+                callbackException = new RuntimeException(code + ": " + data);
+            } catch (Exception e) {
+                callbackException = e;
             } finally {
-                AsyncHelper.setApiReturn(true);
+                if (code != 65362) {
+                    AsyncHelper.setApiReturn(true);
+                }
             }
         };
 
@@ -88,6 +97,11 @@ public class ProgramManager {
 
         sdk.getViplexCore().nvStartTransferProgramAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+
+        // Main 스레드에서 예외 체크
+        if (callbackException != null) {
+            throw new RuntimeException("프로그램 전송 실패", callbackException);
+        }
     }
 
     public int findOrCreateProgramId(Terminal terminal) {

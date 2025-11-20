@@ -27,10 +27,19 @@ public class MainTest2 {
 
         RebootManager rebootManager = new RebootManager();
         System.out.println("reboot 스케쥴 설정");
-        rebootManager.setRebootTask(firstTerminal, "0 0 6 ? * 1");
+        rebootManager.setRebootTask(
+                firstTerminal,
+                "0 0 6 ? * 1",
+                () -> System.out.println("재부팅 설정 성공"),
+                error -> System.err.println("재부팅 설정 실패: " + error)
+        );
 
         System.out.println("reboot 스케쥴 조회");
-        rebootManager.searchRebootTask(firstTerminal);
+        rebootManager.searchRebootTask(
+                firstTerminal,
+                data -> System.out.println("재부팅 시간: " + data.getDisplayText() + " (cron: " + data.getCron() + ")"),
+                error -> System.err.println("재부팅 조회 실패: " + error)
+        );
 
         PowerManager powerManager = new PowerManager(firstTerminal);
         System.out.println("전원 관리 모드 설정");

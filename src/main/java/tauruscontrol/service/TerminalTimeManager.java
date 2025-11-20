@@ -1,7 +1,6 @@
 package tauruscontrol.service;
 
 import org.json.JSONObject;
-import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.util.AsyncHelper;
 import tauruscontrol.util.TemplateLoader;
 import tauruscontrol.domain.terminal.Terminal;

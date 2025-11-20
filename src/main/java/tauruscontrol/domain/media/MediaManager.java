@@ -27,6 +27,33 @@ public class MediaManager {
         medias.add(new Media(path, md5));
     }
 
+    public void removeMedia(int index) {
+        if (index < 0 || index >= medias.size()) {
+            throw new IndexOutOfBoundsException("잘못된 인덱스입니다: " + index);
+        }
+        medias.remove(index);
+    }
+
+    public void moveMediaUp(int index) {
+        if (index <= 0 || index >= medias.size()) {
+            return;  // 맨 위이거나 범위를 벗어나면 아무 동작 안 함
+        }
+        Media media = medias.remove(index);
+        medias.add(index - 1, media);
+    }
+
+    public void moveMediaDown(int index) {
+        if (index < 0 || index >= medias.size() - 1) {
+            return;  // 맨 아래이거나 범위를 벗어나면 아무 동작 안 함
+        }
+        Media media = medias.remove(index);
+        medias.add(index + 1, media);
+    }
+
+    public List<Media> getMedias() {
+        return new ArrayList<>(medias);
+    }
+
     public void validateMedia(String path) {
         validatePath(path);
         validateExtension(path);

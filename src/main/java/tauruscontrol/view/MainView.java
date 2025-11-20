@@ -13,6 +13,7 @@ public class MainView extends BorderPane {
     private LoginView loginView;
     private PlaybackView playbackView;
     private ScheduleView scheduleView;
+    private TerminalSettingsView terminalSettingsView;
 
     public MainView(Stage stage) {
         this.loginController = new LoginController();
@@ -58,7 +59,13 @@ public class MainView extends BorderPane {
                 scheduleView.refresh();
                 contentArea.setContent(scheduleView);
             }
-            case "터미널 설정" -> contentArea.setContent(new Label("터미널 설정 화면"));
+            case "터미널 설정" -> {
+                if (terminalSettingsView == null) {
+                    terminalSettingsView = new TerminalSettingsView(loginController.getTerminalManager());
+                }
+                terminalSettingsView.refresh();
+                contentArea.setContent(terminalSettingsView);
+            }
         }
     }
 }

@@ -32,23 +32,31 @@ public class MainTest2 {
         System.out.println("reboot 스케쥴 조회");
         rebootManager.searchRebootTask(firstTerminal);
 
-        PowerManager powerManager = new PowerManager();
+        PowerManager powerManager = new PowerManager(firstTerminal);
         System.out.println("전원 관리 모드 설정");
-        powerManager.setPowerMode(firstTerminal, "MANUALLY");
+        powerManager.setPowerMode("MANUALLY");
 
         System.out.println("전원 관리 모드 조회");
-        powerManager.readPowerMode(firstTerminal);
+        String mode = powerManager.readPowerMode();
+        System.out.println("전원 관리 모드: " + mode);
 
         System.out.println("전원 상태 설정");
-        powerManager.setPowerState(firstTerminal, "CLOSE");
+        powerManager.setPowerState("CLOSE");
 
         System.out.println("전원 상태 조회");
-        powerManager.readPowerState(firstTerminal);
+        String state = powerManager.readPowerState();
+        System.out.println("전원 상태: " + state);
 
         System.out.println("전원 관리 스케쥴 설정");
-        powerManager.setPowerSchedule(firstTerminal, "0 0 6 * * ?", "0 0 22 * * ?");
+        java.util.List<PowerManager.ScheduleEntry> schedules = new java.util.ArrayList<>();
+        schedules.add(new PowerManager.ScheduleEntry("OPEN", "0 0 6 * * ?"));
+        schedules.add(new PowerManager.ScheduleEntry("CLOSE", "0 0 22 * * ?"));
+        powerManager.setPowerSchedule(schedules);
 
         System.out.println("AUTO면 스케쥴 조회");
-        powerManager.readPowerSchedule(firstTerminal);
+        java.util.List<PowerManager.ScheduleEntry> readSchedules = powerManager.readPowerSchedule();
+        for (PowerManager.ScheduleEntry entry : readSchedules) {
+            System.out.println(entry.getAction() + " " + entry.getCron());
+        }
     }
 }

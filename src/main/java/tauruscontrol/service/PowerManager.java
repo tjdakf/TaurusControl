@@ -3,20 +3,26 @@ package tauruscontrol.service;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tauruscontrol.util.AsyncHelper;
-import tauruscontrol.util.CronParser;
 import tauruscontrol.util.TemplateLoader;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PowerManager {
     private final SDKManager sdk;
+    private final Terminal terminal;
 
-    public PowerManager() {
+    public PowerManager(Terminal terminal) {
         this.sdk = SDKManager.getInstance();
+        this.terminal = terminal;
     }
 
-    public void readPowerMode(Terminal terminal) {
+    public String readPowerMode() {
+        final String[] result = new String[1];
+
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -24,7 +30,7 @@ public class PowerManager {
                 }
 
                 JSONObject obj = new JSONObject(data);
-                System.out.println("전원 관리 모드: " + obj.getString("mode"));
+                result[0] = obj.getString("mode");
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -35,9 +41,13 @@ public class PowerManager {
 
         sdk.getViplexCore().nvGetScreenPowerModeAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+
+        return result[0];
     }
 
-    public void readPowerState(Terminal terminal) {
+    public String readPowerState() {
+        final String[] result = new String[1];
+
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -45,7 +55,7 @@ public class PowerManager {
                 }
 
                 JSONObject obj = new JSONObject(data);
-                System.out.println("전원 상태: " + obj.getString("state"));
+                result[0] = obj.getString("state");
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -56,9 +66,13 @@ public class PowerManager {
 
         sdk.getViplexCore().nvGetScreenPowerStateAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+
+        return result[0];
     }
 
-    public void readPowerSchedule(Terminal terminal) {
+    public List<ScheduleEntry> readPowerSchedule() {
+        final List<ScheduleEntry> scheduleList = new ArrayList<>();
+
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -66,22 +80,18 @@ public class PowerManager {
                 }
 
                 JSONObject obj = new JSONObject(data);
-                if (!obj.getBoolean("enable")) {
-                    return;
-                }
+                if (obj.has("conditions")) {
+                    JSONArray conditions = obj.getJSONArray("conditions");
 
-                JSONArray conditions = obj.getJSONArray("conditions");
-                if (conditions.isEmpty()) {
-                    System.out.println("스케쥴 설정 없음");
-                    return;
-                }
-
-                for (int i = 0; i < conditions.length(); i++) {
-                    JSONObject condition = conditions.getJSONObject(i);
-                    String action = condition.getString("action");
-                    String cron = condition.getJSONArray("cron").getString(0);
-                    String schedule = CronParser.parse(cron);
-                    System.out.println(action + " " + schedule);
+                    for (int i = 0; i < conditions.length(); i++) {
+                        JSONObject condition = conditions.getJSONObject(i);
+                        String action = condition.getString("action");
+                        JSONArray cronArray = condition.getJSONArray("cron");
+                        if (cronArray.length() > 0) {
+                            String cron = cronArray.getString(0);
+                            scheduleList.add(new ScheduleEntry(action, cron));
+                        }
+                    }
                 }
             } finally {
                 AsyncHelper.setApiReturn(true);
@@ -93,9 +103,11 @@ public class PowerManager {
 
         sdk.getViplexCore().nvGetScreenPowerPolicyAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+
+        return scheduleList;
     }
 
-    public void setPowerMode(Terminal terminal, String mode) {
+    public void setPowerMode(String mode) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -114,7 +126,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setPowerState(Terminal terminal, String state) {
+    public void setPowerState(String state) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -133,7 +145,7 @@ public class PowerManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setPowerSchedule(Terminal terminal, String onCron, String offCron) {
+    public void setPowerSchedule(List<ScheduleEntry> schedules) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
@@ -144,18 +156,36 @@ public class PowerManager {
             }
         };
 
-        JSONObject onCondition = TemplateLoader.load("power-schedule-condition.json");
-        onCondition.put("action", "OPEN");
-        onCondition.getJSONArray("cron").put(0, onCron);
-        JSONObject offCondition = TemplateLoader.load("power-schedule-condition.json");
-        offCondition.put("action", "CLOSE");
-        offCondition.getJSONArray("cron").put(0, offCron);
         JSONObject obj = TemplateLoader.load("set-power-schedule.json");
         obj.put("sn", terminal.getSn());
-        obj.getJSONObject("taskInfo").getJSONArray("conditions").put(0, onCondition);
-        obj.getJSONObject("taskInfo").getJSONArray("conditions").put(1, offCondition);
+
+        JSONArray conditions = obj.getJSONObject("taskInfo").getJSONArray("conditions");
+        for (ScheduleEntry schedule : schedules) {
+            JSONObject condition = TemplateLoader.load("power-schedule-condition.json");
+            condition.put("action", schedule.getAction());
+            condition.getJSONArray("cron").put(0, schedule.getCron());
+            conditions.put(condition);
+        }
 
         sdk.getViplexCore().nvSetScreenPowerPolicyAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+    }
+
+    public static class ScheduleEntry {
+        private final String action;
+        private final String cron;
+
+        public ScheduleEntry(String action, String cron) {
+            this.action = action;
+            this.cron = cron;
+        }
+
+        public String getAction() {
+            return action;
+        }
+
+        public String getCron() {
+            return cron;
+        }
     }
 }

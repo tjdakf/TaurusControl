@@ -50,11 +50,13 @@ public class TitleBar extends HBox {
         Button minimizeButton = new Button("—");
         styleMinimizeButton(minimizeButton);
         minimizeButton.setOnAction(event -> stage.setIconified(true));
+        minimizeButton.setFocusTraversable(false);
 
         // 닫기 버튼
         Button closeButton = new Button("✕");
         styleCloseButton(closeButton);
         closeButton.setOnAction(event -> stage.close());
+        closeButton.setFocusTraversable(false);
 
         getChildren().addAll(leftSpacer, dragRegion, minimizeButton, closeButton);
     }

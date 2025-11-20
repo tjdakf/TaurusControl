@@ -12,6 +12,7 @@ public class MainView extends BorderPane {
     private ContentArea contentArea;
     private LoginView loginView;
     private PlaybackView playbackView;
+    private ScheduleView scheduleView;
 
     public MainView(Stage stage) {
         this.loginController = new LoginController();
@@ -50,7 +51,13 @@ public class MainView extends BorderPane {
                 playbackView.refresh();
                 contentArea.setContent(playbackView);
             }
-            case "스케줄 관리" -> contentArea.setContent(new Label("스케줄 관리 화면"));
+            case "스케쥴 관리" -> {
+                if (scheduleView == null) {
+                    scheduleView = new ScheduleView(loginController.getTerminalManager());
+                }
+                scheduleView.refresh();
+                contentArea.setContent(scheduleView);
+            }
             case "터미널 설정" -> contentArea.setContent(new Label("터미널 설정 화면"));
         }
     }

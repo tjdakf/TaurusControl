@@ -9,6 +9,11 @@ public class ProgressDialog extends StackPane {
 
     public ProgressDialog(String message) {
         setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        setAlignment(Pos.CENTER);
+
+        setOnMouseClicked(e -> e.consume());
+        setOnMousePressed(e -> e.consume());
+        setOnMouseReleased(e -> e.consume());
 
         VBox box = new VBox(15);
         box.setAlignment(Pos.CENTER);

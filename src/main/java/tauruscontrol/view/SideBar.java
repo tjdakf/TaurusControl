@@ -31,7 +31,7 @@ public class SideBar extends VBox {
         // 메뉴 버튼들
         Button loginButton = createMenuButton("로그인 관리");
         Button playButton = createMenuButton("재생 관리");
-        Button scheduleButton = createMenuButton("스케줄 관리");
+        Button scheduleButton = createMenuButton("스케쥴 관리");
         Button settingButton = createMenuButton("터미널 설정");
 
         // 첫 번째 버튼 기본 선택
@@ -63,6 +63,7 @@ public class SideBar extends VBox {
         Button button = new Button(text);
         button.setPrefWidth(220);
         button.setPrefHeight(80);
+        button.setFocusTraversable(false);
         button.setStyle(
                 "-fx-background-color: transparent;" +
                         "-fx-text-fill: white;" +

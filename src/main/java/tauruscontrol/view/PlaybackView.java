@@ -243,6 +243,7 @@ public class PlaybackView extends StackPane {
         button.setPrefWidth(130);
         button.setMinHeight(40);
         button.setMaxHeight(40);
+        button.setFocusTraversable(false);
         button.setOnAction(event -> handleSendProgram());
 
         HBox container = new HBox(button);

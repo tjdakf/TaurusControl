@@ -44,6 +44,7 @@ public class LoginView extends StackPane {
         Button searchButton = new Button("터미널 검색");
         searchButton.getStyleClass().add("search-button");
         searchButton.setOnAction(event -> searchTerminals());
+        searchButton.setFocusTraversable(false);
         VBox.setMargin(searchButton, new Insets(20,0, 30, 50));
 
         // 헤더
@@ -243,6 +244,7 @@ public class LoginView extends StackPane {
             Button loginButton = new Button("로그인");
             loginButton.setPrefWidth(80);
             loginButton.getStyleClass().add("login-button");
+            loginButton.setFocusTraversable(false);
             loginButton.setOnAction(event -> {
                 if (terminal.hasPassword()) {
                     // 비밀번호가 저장되어 있으면 바로 로그인

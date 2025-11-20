@@ -35,7 +35,9 @@ public class MainTest {
         programManager.saveProgramToLocal();
 
         System.out.println("프로그램 전송");
-        programManager.publishProgram(firstTerminal, mediaManager);
+        programManager.publishProgram(firstTerminal, mediaManager, (progress) -> {
+            System.out.println("전송 진행률: " + progress + "%");
+        });
         Thread.sleep(3000);
     }
 }

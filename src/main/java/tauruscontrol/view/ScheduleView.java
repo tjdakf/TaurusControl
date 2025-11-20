@@ -11,6 +11,7 @@ import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.service.PowerManager;
 import tauruscontrol.util.ScheduleHelper;
+import tauruscontrol.util.UIConstants;
 import tauruscontrol.view.components.*;
 
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ public class ScheduleView extends StackPane {
         getStylesheets().add(getClass().getResource("/styles/common-styles.css").toExternalForm());
         getStylesheets().add(getClass().getResource("/styles/schedule-view.css").toExternalForm());
 
-        HBox mainLayout = new HBox(30);
-        mainLayout.setPadding(new Insets(20, 40, 20, 40));
+        HBox mainLayout = new HBox(UIConstants.PANEL_GAP);
+        mainLayout.setPadding(new Insets(UIConstants.PANEL_PADDING_SMALL, UIConstants.PANEL_PADDING_LARGE,
+                UIConstants.PANEL_PADDING_SMALL, UIConstants.PANEL_PADDING_LARGE));
         mainLayout.setAlignment(Pos.CENTER);
 
         VBox leftPanel = createTerminalPanel();

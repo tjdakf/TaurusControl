@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
+import tauruscontrol.util.UIConstants;
 import tauruscontrol.view.components.BrightnessDialog;
 import tauruscontrol.view.components.RebootScheduleDialog;
 import tauruscontrol.view.components.TimeSyncDialog;
@@ -27,8 +28,9 @@ public class TerminalSettingsView extends StackPane {
 
         getStylesheets().add(getClass().getResource("/styles/common-styles.css").toExternalForm());
 
-        HBox mainLayout = new HBox(30);
-        mainLayout.setPadding(new Insets(20, 40, 20, 40));
+        HBox mainLayout = new HBox(UIConstants.PANEL_GAP);
+        mainLayout.setPadding(new Insets(UIConstants.PANEL_PADDING_SMALL, UIConstants.PANEL_PADDING_LARGE,
+                UIConstants.PANEL_PADDING_SMALL, UIConstants.PANEL_PADDING_LARGE));
         mainLayout.setAlignment(Pos.CENTER);
 
         VBox leftPanel = createTerminalPanel();
@@ -49,15 +51,15 @@ public class TerminalSettingsView extends StackPane {
     }
 
     private VBox createTerminalPanel() {
-        VBox panel = new VBox(5);
+        VBox panel = new VBox(UIConstants.SPACING_SMALL);
         panel.setAlignment(Pos.TOP_LEFT);
-        panel.setPrefWidth(500);
-        panel.setMaxWidth(500);
+        panel.setPrefWidth(UIConstants.PANEL_WIDTH);
+        panel.setMaxWidth(UIConstants.PANEL_WIDTH);
 
         HBox titleRow = new HBox();
         titleRow.setAlignment(Pos.CENTER_LEFT);
-        titleRow.setMinHeight(35);
-        titleRow.setMaxHeight(35);
+        titleRow.setMinHeight(UIConstants.TITLE_HEIGHT);
+        titleRow.setMaxHeight(UIConstants.TITLE_HEIGHT);
 
         Label title = new Label("터미널 목록");
         title.getStyleClass().add("title-label");
@@ -68,8 +70,8 @@ public class TerminalSettingsView extends StackPane {
 
         StackPane containerWrapper = new StackPane(terminalListContainer);
         containerWrapper.setStyle("-fx-border-color: #6a6a6a; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: #3e3e3e; -fx-background-radius: 5;");
-        containerWrapper.setMinHeight(402);
-        containerWrapper.setMaxHeight(402);
+        containerWrapper.setMinHeight(UIConstants.CONTAINER_HEIGHT);
+        containerWrapper.setMaxHeight(UIConstants.CONTAINER_HEIGHT);
 
         terminalListContainer.setStyle("-fx-background-color: #3e3e3e; -fx-spacing: 0;");
         terminalListContainer.setFillWidth(true);
@@ -82,27 +84,27 @@ public class TerminalSettingsView extends StackPane {
         HBox header = new HBox();
         header.setStyle("-fx-background-color: #323232; -fx-padding: 10;");
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setMinHeight(40);
-        header.setPrefHeight(40);
+        header.setMinHeight(UIConstants.ROW_HEIGHT);
+        header.setPrefHeight(UIConstants.ROW_HEIGHT);
 
         Label nameLabel = new Label("터미널 이름");
         nameLabel.getStyleClass().add("header-label");
-        nameLabel.setPrefWidth(200);
+        nameLabel.setPrefWidth(UIConstants.NAME_LABEL_WIDTH);
 
         Label resolutionLabel = new Label("해상도");
         resolutionLabel.getStyleClass().add("header-label");
-        resolutionLabel.setPrefWidth(150);
+        resolutionLabel.setPrefWidth(UIConstants.RESOLUTION_LABEL_WIDTH);
 
         header.getChildren().addAll(nameLabel, resolutionLabel);
         return header;
     }
 
     private VBox createIconPanel() {
-        VBox panel = new VBox(30);
+        VBox panel = new VBox(UIConstants.PANEL_GAP);
         panel.setAlignment(Pos.TOP_CENTER);
         panel.setPadding(new Insets(70, 0, 0, 0));
-        panel.setPrefWidth(500);
-        panel.setMaxWidth(500);
+        panel.setPrefWidth(UIConstants.PANEL_WIDTH);
+        panel.setMaxWidth(UIConstants.PANEL_WIDTH);
 
         // 첫 번째 줄: 시간 동기화, 재부팅 설정
         HBox firstRow = new HBox(100);
@@ -144,7 +146,7 @@ public class TerminalSettingsView extends StackPane {
     }
 
     private VBox createIconButton(String iconPath, String labelText, int iconSize, Runnable action) {
-        VBox container = new VBox(10);
+        VBox container = new VBox(UIConstants.SPACING_MEDIUM);
         container.setAlignment(Pos.CENTER);
         container.setStyle("-fx-cursor: hand;");
 
@@ -232,9 +234,9 @@ public class TerminalSettingsView extends StackPane {
     private HBox createTerminalRow(Terminal terminal, int index) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(10));
-        row.setMinHeight(40);
-        row.setPrefHeight(40);
+        row.setPadding(new Insets(UIConstants.SPACING_MEDIUM));
+        row.setMinHeight(UIConstants.ROW_HEIGHT);
+        row.setPrefHeight(UIConstants.ROW_HEIGHT);
 
         String bgColor = "#3a3a3a";
         if (index % 2 == 1) {
@@ -253,11 +255,11 @@ public class TerminalSettingsView extends StackPane {
 
         Label nameLabel = new Label(terminal.getAliasName());
         nameLabel.getStyleClass().add("content-label");
-        nameLabel.setPrefWidth(200);
+        nameLabel.setPrefWidth(UIConstants.NAME_LABEL_WIDTH);
 
         Label resolutionLabel = new Label(terminal.getWidth() + " x " + terminal.getHeight());
         resolutionLabel.getStyleClass().add("content-label");
-        resolutionLabel.setPrefWidth(150);
+        resolutionLabel.setPrefWidth(UIConstants.RESOLUTION_LABEL_WIDTH);
 
         row.getChildren().addAll(nameLabel, resolutionLabel);
         return row;
@@ -266,9 +268,10 @@ public class TerminalSettingsView extends StackPane {
     private HBox createNoTerminalMessageRow() {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(10, 10, 10, 20));
-        row.setMinHeight(40);
-        row.setPrefHeight(40);
+        row.setPadding(new Insets(UIConstants.SPACING_MEDIUM, UIConstants.SPACING_MEDIUM,
+                UIConstants.SPACING_MEDIUM, UIConstants.SPACING_LARGE));
+        row.setMinHeight(UIConstants.ROW_HEIGHT);
+        row.setPrefHeight(UIConstants.ROW_HEIGHT);
         row.setStyle("-fx-background-color: #3a3a3a;");
 
         Label messageLabel = new Label("로그인 된 터미널이 없습니다.");
@@ -280,8 +283,8 @@ public class TerminalSettingsView extends StackPane {
 
     private HBox createEmptyTerminalRow(int index) {
         HBox row = new HBox();
-        row.setMinHeight(40);
-        row.setPrefHeight(40);
+        row.setMinHeight(UIConstants.ROW_HEIGHT);
+        row.setPrefHeight(UIConstants.ROW_HEIGHT);
 
         String bgColor = "#3a3a3a";
         if (index % 2 == 1) {

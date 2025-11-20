@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 import tauruscontrol.controller.LoginController;
 import tauruscontrol.domain.terminal.Terminal;
+import tauruscontrol.util.UIConstants;
 import tauruscontrol.view.components.ErrorDialog;
 import tauruscontrol.view.components.PasswordDialog;
 import tauruscontrol.view.components.ProgressDialog;
@@ -46,7 +47,8 @@ public class LoginView extends StackPane {
         searchButton.getStyleClass().add("search-button");
         searchButton.setOnAction(event -> searchTerminals());
         searchButton.setFocusTraversable(false);
-        VBox.setMargin(searchButton, new Insets(20,0, 30, 50));
+        VBox.setMargin(searchButton, new Insets(UIConstants.PANEL_PADDING_SMALL, 0,
+                UIConstants.PANEL_GAP, 50));
 
         // 헤더
         HBox header = createHeader();
@@ -138,22 +140,22 @@ public class LoginView extends StackPane {
     private void showLoginErrorDialog(String errorMessage) {
         ErrorDialog errorDialog = new ErrorDialog("로그인 실패", errorMessage);
         getChildren().add(errorDialog);
-        errorDialog.showTemporary(2000);
+        errorDialog.showTemporary(UIConstants.DIALOG_TIMEOUT_SHORT);
     }
 
     private HBox createHeader() {
         HBox header = new HBox();
         header.setStyle("-fx-background-color: #323232; -fx-padding: 10;");
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setMinHeight(40);
-        header.setPrefHeight(40);
-        header.setMaxHeight(40);
+        header.setMinHeight(UIConstants.ROW_HEIGHT);
+        header.setPrefHeight(UIConstants.ROW_HEIGHT);
+        header.setMaxHeight(UIConstants.ROW_HEIGHT);
 
         // 상태 - 고정 60px
         Label statusLabel = new Label("");
-        statusLabel.setMinWidth(60);
-        statusLabel.setPrefWidth(60);
-        statusLabel.setMaxWidth(60);
+        statusLabel.setMinWidth(UIConstants.STATUS_WIDTH);
+        statusLabel.setPrefWidth(UIConstants.STATUS_WIDTH);
+        statusLabel.setMaxWidth(UIConstants.STATUS_WIDTH);
         statusLabel.setAlignment(Pos.CENTER);
 
         // 터미널 이름 - 늘어남
@@ -173,9 +175,9 @@ public class LoginView extends StackPane {
 
         // 액션 - 고정 100px
         Label actionLabel = new Label("");
-        actionLabel.setMinWidth(100);
-        actionLabel.setPrefWidth(100);
-        actionLabel.setMaxWidth(100);
+        actionLabel.setMinWidth(UIConstants.ACTION_WIDTH);
+        actionLabel.setPrefWidth(UIConstants.ACTION_WIDTH);
+        actionLabel.setMaxWidth(UIConstants.ACTION_WIDTH);
 
         header.getChildren().addAll(statusLabel, nameLabel, resolutionLabel, actionLabel);
         return header;
@@ -184,7 +186,7 @@ public class LoginView extends StackPane {
     private HBox createTerminalRow(Terminal terminal, int index) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(10));
+        row.setPadding(new Insets(UIConstants.SPACING_MEDIUM));
         row.setFillHeight(true);
         VBox.setVgrow(row, Priority.ALWAYS);
         row.setMinHeight(0);
@@ -208,9 +210,9 @@ public class LoginView extends StackPane {
         }
         HBox statusBox = new HBox(statusCircle);
         statusBox.setAlignment(Pos.CENTER);
-        statusBox.setMinWidth(60);
-        statusBox.setPrefWidth(60);
-        statusBox.setMaxWidth(60);
+        statusBox.setMinWidth(UIConstants.STATUS_WIDTH);
+        statusBox.setPrefWidth(UIConstants.STATUS_WIDTH);
+        statusBox.setMaxWidth(UIConstants.STATUS_WIDTH);
         statusBox.setMinHeight(0);
         statusBox.setMaxHeight(Double.MAX_VALUE);
 
@@ -236,16 +238,16 @@ public class LoginView extends StackPane {
 
         // 로그인 버튼 - 100px
         HBox actionBox = new HBox();
-        actionBox.setMinWidth(100);
-        actionBox.setPrefWidth(100);
-        actionBox.setMaxWidth(100);
+        actionBox.setMinWidth(UIConstants.ACTION_WIDTH);
+        actionBox.setPrefWidth(UIConstants.ACTION_WIDTH);
+        actionBox.setMaxWidth(UIConstants.ACTION_WIDTH);
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setMinHeight(0);
         actionBox.setMaxHeight(Double.MAX_VALUE);
 
         if (!terminal.isLoginedByThisApp()) {
             Button loginButton = new Button("로그인");
-            loginButton.setPrefWidth(80);
+            loginButton.setPrefWidth(UIConstants.BUTTON_SMALL);
             loginButton.getStyleClass().add("login-button");
             loginButton.setFocusTraversable(false);
             loginButton.setOnAction(event -> {
@@ -267,7 +269,7 @@ public class LoginView extends StackPane {
     private HBox createEmptyRow(int index) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(10));
+        row.setPadding(new Insets(UIConstants.SPACING_MEDIUM));
         row.setFillHeight(true);
         VBox.setVgrow(row, Priority.ALWAYS);
         row.setMinHeight(0);
@@ -304,8 +306,8 @@ public class LoginView extends StackPane {
     private VBox createLoadingBox() {
         VBox box = new VBox(15);
         box.setAlignment(Pos.CENTER);
-        box.setPrefSize(180, 120);
-        box.setMaxSize(180, 120);
+        box.setPrefSize(UIConstants.DIALOG_SMALL_WIDTH, UIConstants.DIALOG_SMALL_HEIGHT);
+        box.setMaxSize(UIConstants.DIALOG_SMALL_WIDTH, UIConstants.DIALOG_SMALL_HEIGHT);
         box.setStyle(
                 "-fx-background-color: #2a2a2a;" +
                         "-fx-background-radius: 10;" +

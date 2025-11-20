@@ -83,9 +83,11 @@ public class ScheduleHelperTest {
     public void CRON_정규화가_올바르게_작동한다() {
         List<ScheduleEntry> entries = new ArrayList<>();
         entries.add(new ScheduleEntry("OPEN", "0 5 6 * * ?"));
+        entries.add(new ScheduleEntry("CLOSE", "0 0 20 * * ?"));
 
         List<ScheduleEntry> result = ScheduleHelper.normalizeAndOptimize(entries);
 
+        assertFalse(result.isEmpty());
         assertTrue(result.get(0).getCron().startsWith("00 05 06"));
     }
 }

@@ -17,6 +17,8 @@ class TerminalManagerTest {
         data1.put("height", 400);
         data1.put("logined", false);
         data1.put("hasPassWord", false);
+        data1.put("password", "");
+        data1.put("terminalState", 0);
 
         JSONObject data2 = new JSONObject();
         data2.put("aliasName", "C");
@@ -25,6 +27,8 @@ class TerminalManagerTest {
         data2.put("height", 400);
         data2.put("logined", true);
         data2.put("hasPassWord", false);
+        data2.put("password", "");
+        data2.put("terminalState", 3);
 
         JSONObject data3 = new JSONObject();
         data3.put("aliasName", "B");
@@ -33,6 +37,8 @@ class TerminalManagerTest {
         data3.put("height", 400);
         data3.put("logined", true);
         data3.put("hasPassWord", false);
+        data3.put("password", "");
+        data3.put("terminalState", 3);
 
         Terminal terminal1 = new Terminal(data1);
         Terminal terminal2 = new Terminal(data2);

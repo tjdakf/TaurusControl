@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
+import tauruscontrol.view.components.TimeSyncDialog;
 
 import java.util.List;
 
@@ -292,8 +293,13 @@ public class TerminalSettingsView extends StackPane {
             System.out.println("시간 동기화: 터미널을 선택해주세요.");
             return;
         }
-        System.out.println("시간 동기화 클릭: " + selectedTerminal.getAliasName());
-        // TODO: TimeSyncDialog 표시
+        TimeSyncDialog dialog = new TimeSyncDialog(selectedTerminal, () -> {
+            if (currentDialog instanceof TimeSyncDialog) {
+                ((TimeSyncDialog) currentDialog).cleanup();
+            }
+            closeDialog();
+        });
+        showDialog(dialog);
     }
 
     private void handleRebootSchedule() {

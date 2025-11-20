@@ -35,7 +35,7 @@ public abstract class BaseSettingDialog extends StackPane {
             }
         });
 
-        VBox card = new VBox(20);
+        VBox card = new VBox(0);
         card.setAlignment(Pos.TOP_CENTER);
         card.setPrefSize(600, 400);
         card.setMaxSize(600, 400);
@@ -47,7 +47,7 @@ public abstract class BaseSettingDialog extends StackPane {
                         "-fx-border-width: 1;" +
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
         );
-        card.setPadding(new Insets(15, 15, 0, 0));
+        card.setPadding(new Insets(5, 15, 0, 0));
 
         HBox header = createHeader(title);
 

@@ -42,9 +42,22 @@ public class TimeSyncDialog extends BaseSettingDialog {
 
     @Override
     protected VBox createContent() {
+        VBox mainContainer = new VBox();
+        mainContainer.setAlignment(Pos.TOP_CENTER);
+        VBox.setVgrow(mainContainer, Priority.ALWAYS);
+
+        // 타이틀
+        VBox titleBox = new VBox();
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(0, 0, 0, 0));
+        Label titleLabel = new Label("시간 동기화");
+        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+        titleBox.getChildren().add(titleLabel);
+
+        // 중앙 컨텐츠
         VBox content = new VBox(10);
         content.setAlignment(Pos.CENTER);
-        content.setPadding(new Insets(0, 20, 50, 20));
+        content.setPadding(new Insets(40, 20, 60, 20));
         VBox.setVgrow(content, Priority.ALWAYS);
 
         localTimeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-family: 'Consolas', 'Monaco', 'Courier New', monospace;");
@@ -92,10 +105,12 @@ public class TimeSyncDialog extends BaseSettingDialog {
 
         VBox buttonContainer = new VBox(syncButton);
         buttonContainer.setAlignment(Pos.CENTER);
-        VBox.setMargin(buttonContainer, new Insets(20, 0, 0, 0));
+        VBox.setMargin(buttonContainer, new Insets(35, 0, 0, 0));
 
         content.getChildren().addAll(localTimeLabel, terminalTimeLabel, buttonContainer);
-        return content;
+
+        mainContainer.getChildren().addAll(titleBox, content);
+        return mainContainer;
     }
 
     private void startLocalTimeClock() {

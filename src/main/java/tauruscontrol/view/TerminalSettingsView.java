@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
+import tauruscontrol.view.components.RebootScheduleDialog;
 import tauruscontrol.view.components.TimeSyncDialog;
 
 import java.util.List;
@@ -307,8 +308,8 @@ public class TerminalSettingsView extends StackPane {
             System.out.println("재부팅 설정: 터미널을 선택해주세요.");
             return;
         }
-        System.out.println("재부팅 설정 클릭: " + selectedTerminal.getAliasName());
-        // TODO: RebootScheduleDialog 표시
+        RebootScheduleDialog dialog = new RebootScheduleDialog(selectedTerminal, this::closeDialog);
+        showDialog(dialog);
     }
 
     private void handleBrightness() {

@@ -9,6 +9,8 @@ import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
+import java.util.function.Consumer;
+
 public class RebootManager {
     private final SDKManager sdk;
 
@@ -16,22 +18,25 @@ public class RebootManager {
         this.sdk = SDKManager.getInstance();
     }
 
-    public void searchRebootTask(Terminal terminal) {
+    public void searchRebootTask(Terminal terminal,
+                                 Consumer<RebootTimeData> onSuccess,
+                                 Consumer<String> onError) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
-                    throw new RuntimeException(code + ": " + data);
+                    onError.accept("오류 코드: " + code);
+                    return;
                 }
 
                 JSONObject obj = new JSONObject(data);
                 if (obj.isEmpty()) {
-                    System.out.println("재부팅 초기 설정되지 않았습니다.");
+                    onError.accept("NOT_INITIALIZED");
                     return;
                 }
 
                 JSONArray conditions = obj.getJSONArray("conditions");
                 if (conditions.isEmpty()) {
-                    System.out.println("재부팅 시간이 설정되지 않았습니다.");
+                    onError.accept("NO_TIME_SET");
                     return;
                 }
 
@@ -39,8 +44,10 @@ public class RebootManager {
                         .getJSONArray("cron")
                         .getString(0);
 
-                String Schedule = CronParser.parse(cron);
-                System.out.println(Schedule);
+                String displayText = CronParser.parse(cron);
+                onSuccess.accept(new RebootTimeData(cron, displayText));
+            } catch (Exception e) {
+                onError.accept("알 수 없는 오류: " + e.getMessage());
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -53,12 +60,18 @@ public class RebootManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setRebootTask(Terminal terminal, String cron) {
+    public void setRebootTask(Terminal terminal, String cron,
+                              Runnable onSuccess,
+                              Consumer<String> onError) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
-                    throw new RuntimeException(code + ": " + data);
+                    onError.accept("설정 실패: " + code);
+                    return;
                 }
+                onSuccess.run();
+            } catch (Exception e) {
+                onError.accept("알 수 없는 오류: " + e.getMessage());
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -70,9 +83,27 @@ public class RebootManager {
                 .getJSONArray("conditions")
                 .getJSONObject(0)
                 .getJSONArray("cron")
-                .put(cron);
+                .put(0, cron);
 
         sdk.getViplexCore().nvSetReBootTaskAsync(obj.toString(), callBack);
         AsyncHelper.waitAPIReturn();
+    }
+
+    public static class RebootTimeData {
+        private final String cron;
+        private final String displayText;
+
+        public RebootTimeData(String cron, String displayText) {
+            this.cron = cron;
+            this.displayText = displayText;
+        }
+
+        public String getCron() {
+            return cron;
+        }
+
+        public String getDisplayText() {
+            return displayText;
+        }
     }
 }

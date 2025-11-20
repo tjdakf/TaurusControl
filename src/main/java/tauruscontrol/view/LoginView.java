@@ -196,7 +196,13 @@ public class LoginView extends StackPane {
 
         // 상태 표시등 - 60px
         Circle statusCircle = new Circle(8);
-        statusCircle.setFill(terminal.isLogined() ? Color.LIMEGREEN : Color.GRAY);
+        if (terminal.isLoginedByThisApp()) {
+            statusCircle.setFill(Color.LIMEGREEN);  // 이 앱에서 로그인됨
+        } else if (terminal.isLoginedByOtherDevice()) {
+            statusCircle.setFill(Color.YELLOW);  // 다른 장치에서 로그인됨
+        } else {
+            statusCircle.setFill(Color.GRAY);  // 로그인 안됨
+        }
         HBox statusBox = new HBox(statusCircle);
         statusBox.setAlignment(Pos.CENTER);
         statusBox.setMinWidth(60);
@@ -233,11 +239,19 @@ public class LoginView extends StackPane {
         actionBox.setMinHeight(0);
         actionBox.setMaxHeight(Double.MAX_VALUE);
 
-        if (!terminal.isLogined()) {
+        if (!terminal.isLoginedByThisApp()) {
             Button loginButton = new Button("로그인");
             loginButton.setPrefWidth(80);
             loginButton.getStyleClass().add("login-button");
-            loginButton.setOnAction(event -> showPasswordDialog(terminal));
+            loginButton.setOnAction(event -> {
+                if (terminal.hasPassword()) {
+                    // 비밀번호가 저장되어 있으면 바로 로그인
+                    handleLogin(terminal, terminal.getPassword());
+                } else {
+                    // 비밀번호가 없으면 다이얼로그 표시
+                    showPasswordDialog(terminal);
+                }
+            });
             actionBox.getChildren().add(loginButton);
         }
 
@@ -351,7 +365,8 @@ public class LoginView extends StackPane {
     private void autoLogin() {
         List<Terminal> terminalsToLogin = controller.getTerminals().stream()
                 .filter(Terminal::hasPassword)
-                .filter(terminal -> !terminal.isLogined())
+                .filter(terminal -> !terminal.isLoginedByThisApp())
+                .filter(terminal -> !terminal.isLoginedByOtherDevice())  // 다른 장치에서 로그인된 터미널 제외
                 .toList();
 
         if (terminalsToLogin.isEmpty()) {

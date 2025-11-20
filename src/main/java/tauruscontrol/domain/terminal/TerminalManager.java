@@ -85,14 +85,14 @@ public class TerminalManager {
     public List<Terminal> getTerminals() {
         return terminals.stream()
                 .sorted(Comparator
-                        .comparing(Terminal::isLogined).reversed()
+                        .comparing(Terminal::getTerminalState).reversed()
                         .thenComparing(Terminal::getAliasName))
                 .toList();
     }
 
     public List<Terminal> getLoggedInTerminals() {
         return terminals.stream()
-                .filter(Terminal::isLogined)
+                .filter(Terminal::isLoginedByThisApp)
                 .sorted(Comparator.comparing(Terminal::getAliasName))
                 .toList();
     }

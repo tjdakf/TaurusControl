@@ -10,6 +10,7 @@ public class Terminal {
     private boolean logined;
     private boolean hasPassword;
     private String password;
+    private int terminalState;
 
     public Terminal(JSONObject data) {
         this.aliasName = data.getString("aliasName");
@@ -19,10 +20,23 @@ public class Terminal {
         this.logined = data.getBoolean("logined");
         this.hasPassword = data.getBoolean("hasPassWord");
         this.password = data.getString("password");
+        this.terminalState = data.getInt("terminalState");
     }
 
     public boolean isLogined() {
         return logined;
+    }
+
+    public int getTerminalState() {
+        return terminalState;
+    }
+
+    public boolean isLoginedByThisApp() {
+        return terminalState == 3;
+    }
+
+    public boolean isLoginedByOtherDevice() {
+        return terminalState == 2;
     }
 
     public String getAliasName() {
@@ -51,5 +65,12 @@ public class Terminal {
 
     public void setLogined(boolean logined) {
         this.logined = logined;
+        if (logined) {
+            this.terminalState = 3;  // 이 앱에서 로그인됨
+        }
+    }
+
+    public void setTerminalState(int terminalState) {
+        this.terminalState = terminalState;
     }
 }

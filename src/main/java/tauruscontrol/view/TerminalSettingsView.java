@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
+import tauruscontrol.view.components.BrightnessDialog;
 import tauruscontrol.view.components.RebootScheduleDialog;
 import tauruscontrol.view.components.TimeSyncDialog;
 
@@ -317,8 +318,8 @@ public class TerminalSettingsView extends StackPane {
             System.out.println("LED밝기 설정: 터미널을 선택해주세요.");
             return;
         }
-        System.out.println("LED밝기 설정 클릭: " + selectedTerminal.getAliasName());
-        // TODO: BrightnessDialog 표시
+        BrightnessDialog dialog = new BrightnessDialog(selectedTerminal, this::closeDialog);
+        showDialog(dialog);
     }
 
     private void showDialog(StackPane dialog) {

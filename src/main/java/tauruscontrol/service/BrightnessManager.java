@@ -7,6 +7,8 @@ import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
+import java.util.function.Consumer;
+
 public class BrightnessManager {
     private final SDKManager sdk;
 
@@ -14,16 +16,21 @@ public class BrightnessManager {
         this.sdk = SDKManager.getInstance();
     }
 
-    public void readLedBrightness(Terminal terminal) {
+    public void readLedBrightness(Terminal terminal,
+                                  Consumer<Float> onSuccess,
+                                  Consumer<String> onError) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
-                    throw new RuntimeException("밝기 조회 실패");
+                    onError.accept("오류 코드: " + code);
+                    return;
                 }
 
                 JSONObject obj = new JSONObject(data);
                 float brightness = obj.getFloat("ratio");
-                System.out.printf("LED 현재 밝기: %f%%\n", brightness);
+                onSuccess.accept(brightness);
+            } catch (Exception e) {
+                onError.accept("알 수 없는 오류: " + e.getMessage());
             } finally {
                 AsyncHelper.setApiReturn(true);
             }
@@ -36,12 +43,19 @@ public class BrightnessManager {
         AsyncHelper.waitAPIReturn();
     }
 
-    public void setLedBrightness(Terminal terminal, float brightness) {
+    public void setLedBrightness(Terminal terminal,
+                                 float brightness,
+                                 Runnable onSuccess,
+                                 Consumer<String> onError) {
         ViplexCore.CallBack callBack = (code, data) -> {
             try {
                 if (code != 0) {
-                    throw new RuntimeException("밝기 설정 실패");
+                    onError.accept("설정 실패: " + code);
+                    return;
                 }
+                onSuccess.run();
+            } catch (Exception e) {
+                onError.accept("알 수 없는 오류: " + e.getMessage());
             } finally {
                 AsyncHelper.setApiReturn(true);
             }

@@ -27,11 +27,12 @@ public abstract class BaseSettingDialog extends StackPane {
         setOnMousePressed(e -> e.consume());
         setOnMouseReleased(e -> e.consume());
 
-        setOnKeyPressed(event -> {
+        addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 if (onClose != null) {
                     onClose.run();
                 }
+                event.consume();
             }
         });
 

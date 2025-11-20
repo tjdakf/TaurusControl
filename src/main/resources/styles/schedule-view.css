@@ -1,0 +1,81 @@
+/* Schedule View Specific Styles */
+
+/* ===== Power Buttons ===== */
+
+.power-button {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.power-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.power-button-off {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.power-button-off:hover {
+    -fx-background-color: #323232;
+}
+
+/* ===== Save Button ===== */
+
+.save-button {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.save-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* ===== Edit Button ===== */
+
+.edit-button {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-max-width: 35px;
+    -fx-max-height: 35px;
+    -fx-border-color: #1976D2;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.edit-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* ===== Schedule List ===== */
+
+.schedule-row {
+    -fx-cursor: hand;
+}
+
+.schedule-row-even {
+    -fx-background-color: #3a3a3a;
+}
+
+.schedule-row-odd {
+    -fx-background-color: #323232;
+}
+
+.schedule-row-selected {
+    -fx-background-color: #1E88E5;
+}

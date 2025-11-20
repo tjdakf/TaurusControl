@@ -1,0 +1,100 @@
+/* Common Styles for TaurusControl Application */
+
+/* ===== Buttons ===== */
+
+.primary-button {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.secondary-button {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+.icon-button {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-max-width: 35px;
+    -fx-max-height: 35px;
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #323232;
+}
+
+/* ===== Terminal Rows ===== */
+
+.terminal-row {
+    -fx-cursor: hand;
+}
+
+.terminal-row-even {
+    -fx-background-color: #3a3a3a;
+}
+
+.terminal-row-odd {
+    -fx-background-color: #323232;
+}
+
+.terminal-row-selected {
+    -fx-background-color: #1E88E5;
+}
+
+/* ===== Labels ===== */
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.header-label {
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 13px;
+}
+
+.content-label {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+
+/* ===== Containers ===== */
+
+.panel-container {
+    -fx-background-color: #323232;
+}
+
+.dialog-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-card {
+    -fx-background-color: #5a5a5a;
+    -fx-background-radius: 10;
+    -fx-border-color: #999999;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}

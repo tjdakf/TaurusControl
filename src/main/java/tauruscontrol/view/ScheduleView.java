@@ -43,6 +43,9 @@ public class ScheduleView extends StackPane {
         this.terminalListContainer = new VBox();
         this.scheduleListContainer = new VBox();
 
+        getStylesheets().add(getClass().getResource("/styles/common-styles.css").toExternalForm());
+        getStylesheets().add(getClass().getResource("/styles/schedule-view.css").toExternalForm());
+
         HBox mainLayout = new HBox(30);
         mainLayout.setPadding(new Insets(20, 40, 20, 40));
         mainLayout.setAlignment(Pos.CENTER);
@@ -249,54 +252,14 @@ public class ScheduleView extends StackPane {
         onButton.setPrefWidth(80);
         onButton.setPrefHeight(35);
         onButton.setFocusTraversable(false);
-        onButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
-        onButton.setOnMouseEntered(e -> onButton.setStyle(
-            "-fx-background-color: #1976D2;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
-        onButton.setOnMouseExited(e -> onButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
+        onButton.getStyleClass().add("power-button");
         onButton.setOnAction(e -> handleSetPowerState("OPEN"));
 
         Button offButton = new Button("OFF");
         offButton.setPrefWidth(80);
         offButton.setPrefHeight(35);
         offButton.setFocusTraversable(false);
-        offButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
-        offButton.setOnMouseEntered(e -> offButton.setStyle(
-            "-fx-background-color: #1976D2;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
-        offButton.setOnMouseExited(e -> offButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
+        offButton.getStyleClass().add("power-button");
         offButton.setOnAction(e -> handleSetPowerState("CLOSE"));
 
         buttonBox.getChildren().addAll(onButton, offButton);
@@ -333,30 +296,7 @@ public class ScheduleView extends StackPane {
         saveButton.setMinHeight(40);
         saveButton.setMaxHeight(40);
         saveButton.setFocusTraversable(false);
-        saveButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 16px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        );
-        saveButton.setOnMouseEntered(e -> saveButton.setStyle(
-            "-fx-background-color: #1976D2;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 16px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
-        saveButton.setOnMouseExited(e -> saveButton.setStyle(
-            "-fx-background-color: #1E88E5;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 16px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
-        ));
+        saveButton.getStyleClass().add("save-button");
         saveButton.setOnAction(e -> handleSaveSchedule());
 
         HBox saveButtonContainer = new HBox(saveButton);
@@ -383,92 +323,19 @@ public class ScheduleView extends StackPane {
 
         Button addButton = new Button("+");
         addButton.setFocusTraversable(false);
-        Button removeButton = new Button("-");
-        removeButton.setFocusTraversable(false);
-        Button editButton = new Button("편집");
-        editButton.setFocusTraversable(false);
-
-        String iconButtonStyle =
-            "-fx-background-color: #5a5a5a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-family: 'System';" +
-            "-fx-min-width: 35px;" +
-            "-fx-min-height: 35px;" +
-            "-fx-max-width: 35px;" +
-            "-fx-max-height: 35px;" +
-            "-fx-border-color: #6a6a6a;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;" +
-            "-fx-alignment: center;" +
-            "-fx-content-display: center;";
-
-        String iconButtonHoverStyle =
-            "-fx-background-color: #323232;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-family: 'System';" +
-            "-fx-min-width: 35px;" +
-            "-fx-min-height: 35px;" +
-            "-fx-max-width: 35px;" +
-            "-fx-max-height: 35px;" +
-            "-fx-border-color: #6a6a6a;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;" +
-            "-fx-alignment: center;" +
-            "-fx-content-display: center;";
-
-        String editButtonStyle =
-            "-fx-background-color: #5a5a5a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-family: 'System';" +
-            "-fx-min-width: 60px;" +
-            "-fx-min-height: 35px;" +
-            "-fx-max-width: 60px;" +
-            "-fx-max-height: 35px;" +
-            "-fx-border-color: #6a6a6a;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;" +
-            "-fx-alignment: center;" +
-            "-fx-content-display: center;";
-
-        String editButtonHoverStyle =
-            "-fx-background-color: #323232;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-family: 'System';" +
-            "-fx-min-width: 60px;" +
-            "-fx-min-height: 35px;" +
-            "-fx-max-width: 60px;" +
-            "-fx-max-height: 35px;" +
-            "-fx-border-color: #6a6a6a;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;" +
-            "-fx-alignment: center;" +
-            "-fx-content-display: center;";
-
-        addButton.setStyle(iconButtonStyle);
-        addButton.setOnMouseEntered(e -> addButton.setStyle(iconButtonHoverStyle));
-        addButton.setOnMouseExited(e -> addButton.setStyle(iconButtonStyle));
+        addButton.getStyleClass().add("icon-button");
         addButton.setOnAction(e -> handleAddSchedule());
 
-        removeButton.setStyle(iconButtonStyle);
-        removeButton.setOnMouseEntered(e -> removeButton.setStyle(iconButtonHoverStyle));
-        removeButton.setOnMouseExited(e -> removeButton.setStyle(iconButtonStyle));
+        Button removeButton = new Button("-");
+        removeButton.setFocusTraversable(false);
+        removeButton.getStyleClass().add("icon-button");
         removeButton.setOnAction(e -> handleDeleteSchedule());
 
-        editButton.setStyle(editButtonStyle);
-        editButton.setOnMouseEntered(e -> editButton.setStyle(editButtonHoverStyle));
-        editButton.setOnMouseExited(e -> editButton.setStyle(editButtonStyle));
+        Button editButton = new Button("편집");
+        editButton.setFocusTraversable(false);
+        editButton.setPrefWidth(60);
+        editButton.setPrefHeight(35);
+        editButton.getStyleClass().add("secondary-button");
         editButton.setOnAction(e -> handleEditSchedule());
 
         buttonBox.getChildren().addAll(addButton, removeButton, editButton);

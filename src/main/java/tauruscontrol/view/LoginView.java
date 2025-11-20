@@ -26,8 +26,8 @@ public class LoginView extends StackPane {
     private final VBox contentBox;
     private StackPane currentDialog;
 
-    public LoginView() {
-        this.controller = new LoginController();
+    public LoginView(LoginController controller) {
+        this.controller = controller;
 
         // CSS 로드
         getStylesheets().add(getClass().getResource("/styles/login-view.css").toExternalForm());

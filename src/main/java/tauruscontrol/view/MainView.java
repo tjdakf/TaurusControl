@@ -4,13 +4,18 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import tauruscontrol.controller.LoginController;
 
 public class MainView extends BorderPane {
 
+    private final LoginController loginController;
     private ContentArea contentArea;
-    private LoginView loginView;  // 재사용할 LoginView
+    private LoginView loginView;
+    private PlaybackView playbackView;
 
     public MainView(Stage stage) {
+        this.loginController = new LoginController();
+
         setPrefSize(1200, 700);
         setStyle(
                 "-fx-background-color: #5a5a5a;" +
@@ -33,12 +38,18 @@ public class MainView extends BorderPane {
         switch (menuName) {
             case "로그인 관리" -> {
                 if (loginView == null) {
-                    loginView = new LoginView();  // 최초 1회만 생성
-                    loginView.refresh();  // 명시적으로 데이터 로딩
+                    loginView = new LoginView(loginController);
+                    loginView.refresh();
                 }
                 contentArea.setContent(loginView);
             }
-            case "재생 관리" -> contentArea.setContent(new Label("재생 관리 화면"));
+            case "재생 관리" -> {
+                if (playbackView == null) {
+                    playbackView = new PlaybackView(loginController.getTerminalManager());
+                }
+                playbackView.refresh();
+                contentArea.setContent(playbackView);
+            }
             case "스케줄 관리" -> contentArea.setContent(new Label("스케줄 관리 화면"));
             case "터미널 설정" -> contentArea.setContent(new Label("터미널 설정 화면"));
         }

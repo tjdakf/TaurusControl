@@ -63,4 +63,8 @@ public class LoginController {
     public void loginTerminalSync(String sn, String password) throws Exception {
         terminalManager.loginTerminal(sn, password);
     }
+
+    public TerminalManager getTerminalManager() {
+        return terminalManager;
+    }
 }

@@ -6,9 +6,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class ErrorDialog extends StackPane {
+public class SuccessDialog extends StackPane {
 
-    public ErrorDialog(String title, String message) {
+    public SuccessDialog(String title, String message) {
         setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
         VBox box = new VBox(15);
@@ -24,11 +24,11 @@ public class ErrorDialog extends StackPane {
         box.setPadding(new Insets(20));
 
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 16px; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 16px; -fx-font-weight: bold;");
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setMaxWidth(Double.MAX_VALUE);
 
-        Label messageLabel = new Label(message != null ? message : "알 수 없는 오류");
+        Label messageLabel = new Label(message != null ? message : "성공");
         messageLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-text-alignment: center;");
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(210);

@@ -1,0 +1,41 @@
+/* 미디어 버튼 스타일 (+, ×, ▲, ▼) */
+.media-button {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: 'System';
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-max-width: 35px;
+    -fx-max-height: 35px;
+    -fx-border-color: #6a6a6a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-content-display: center;
+}
+
+.media-button:hover {
+    -fx-background-color: #323232;
+}
+
+/* 프로그램 전송 버튼 스타일 */
+.send-button {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-family: 'System';
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-color: #1976D2;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.send-button:hover {
+    -fx-background-color: #1976D2;
+}

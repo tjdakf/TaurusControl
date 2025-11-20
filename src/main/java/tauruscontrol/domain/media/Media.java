@@ -28,7 +28,9 @@ public class Media {
     }
 
     private String extractFileName() {
-        int nameStartIndex = path.lastIndexOf("/");
+        int slashIndex = path.lastIndexOf("/");
+        int backslashIndex = path.lastIndexOf("\\");
+        int nameStartIndex = Math.max(slashIndex, backslashIndex);
         int nameEndIndex = path.lastIndexOf(".");
         return path.substring(nameStartIndex + 1, nameEndIndex);
     }

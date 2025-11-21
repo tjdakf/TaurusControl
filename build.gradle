@@ -47,3 +47,18 @@ test {
     useJUnitPlatform()
     systemProperty 'file.encoding', 'UTF-8'
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'tauruscontrol.TaurusControlApp',
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // JavaFX 모듈을 JAR에 포함하지 않음 (jpackage가 처리)
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

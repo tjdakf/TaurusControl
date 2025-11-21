@@ -11,11 +11,17 @@ public class Media {
     private MediaType mediaType;
 
     public Media(String path, String md5) {
-        this.path = path;
+        this.path = normalizePath(path);
         this.md5 = md5;
         this.fileName = extractFileName();
-        this.extension = path.substring(path.lastIndexOf("."));
+        this.extension = this.path.substring(this.path.lastIndexOf("."));
         this.mediaType = MediaType.from(extension);
+    }
+
+    private String normalizePath(String path) {
+        // Windows 백슬래시를 Unix 스타일 슬래시로 변환
+        // SDK/FTP는 보통 forward slash를 선호
+        return path.replace('\\', '/');
     }
 
     public JSONObject toJSON() {
@@ -28,15 +34,18 @@ public class Media {
     }
 
     private String extractFileName() {
+        // 이미 normalizePath()에서 슬래시로 통일했으므로 슬래시만 찾으면 됨
         int slashIndex = path.lastIndexOf("/");
-        int backslashIndex = path.lastIndexOf("\\");
-        int nameStartIndex = Math.max(slashIndex, backslashIndex);
         int nameEndIndex = path.lastIndexOf(".");
-        return path.substring(nameStartIndex + 1, nameEndIndex);
+        return path.substring(slashIndex + 1, nameEndIndex);
     }
 
     public String getPath() {
         return path;
+    }
+
+    public String getMd5() {
+        return md5;
     }
 
     public String getFileName() {

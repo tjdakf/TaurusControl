@@ -4,15 +4,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import tauruscontrol.util.AsyncHelper;
 import tauruscontrol.util.TemplateLoader;
+import tauruscontrol.domain.media.Media;
 import tauruscontrol.domain.media.MediaManager;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.sdk.SDKManager;
 import tauruscontrol.sdk.ViplexCore;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class ProgramManager {
-    private static final String PROGRAM_OUTPUT_PATH = "temp/program";
+    private static final String PROGRAM_OUTPUT_PATH = System.getProperty("user.home")
+            + File.separator + "TaurusControl"
+            + File.separator + "temp"
+            + File.separator + "Program";
+
+    private static final String MEDIA_TEMP_PATH = System.getProperty("user.home")
+            + File.separator + "TaurusControl"
+            + File.separator + "temp"
+            + File.separator + "Media";
 
     private final SDKManager sdk;
     private int programId;
@@ -62,45 +76,51 @@ public class ProgramManager {
 
     public void publishProgram(Terminal terminal, MediaManager mediaManager, Consumer<Integer> onProgress) {
         callbackException = null;
+        Map<String, File> tempFiles = copyMediaFilesToTemp(mediaManager);
 
-        ViplexCore.CallBack callBack = (code, data) -> {
-            try {
-                if (code == 65362) {
-                    JSONObject obj = new JSONObject(data);
-                    int progress = (int) ((obj.getLong("m_curBytes") * 100) / obj.getLong("m_totalBytes"));
-                    if (onProgress != null) {
-                        onProgress.accept(progress);
+        try {
+            ViplexCore.CallBack callBack = (code, data) -> {
+                try {
+                    if (code == 65362) {
+                        JSONObject obj = new JSONObject(data);
+                        int progress = (int) ((obj.getLong("m_curBytes") * 100) / obj.getLong("m_totalBytes"));
+                        if (onProgress != null) {
+                            onProgress.accept(progress);
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                if (code == 0) {
-                    AsyncHelper.setApiReturn(true);
-                    return;
-                }
+                    if (code == 0) {
+                        AsyncHelper.setApiReturn(true);
+                        return;
+                    }
 
-                callbackException = new RuntimeException(code + ": " + data);
-            } catch (Exception e) {
-                callbackException = e;
-            } finally {
-                if (code != 65362) {
-                    AsyncHelper.setApiReturn(true);
+                    callbackException = new RuntimeException(code + ": " + data);
+                } catch (Exception e) {
+                    callbackException = e;
+                } finally {
+                    if (code != 65362) {
+                        AsyncHelper.setApiReturn(true);
+                    }
                 }
+            };
+
+            JSONObject obj = TemplateLoader.load("publish.json");
+            obj.put("sn", terminal.getSn());
+            JSONObject filePaths = obj.getJSONObject("sendProgramFilePaths");
+
+            String programPath = PROGRAM_OUTPUT_PATH + File.separator + "program" + programId;
+            filePaths.put("programPath", programPath);
+            filePaths.put("mediasPath", buildTempMediasPath(tempFiles, mediaManager));
+
+            sdk.getViplexCore().nvStartTransferProgramAsync(obj.toString(), callBack);
+            AsyncHelper.waitAPIReturn();
+
+            if (callbackException != null) {
+                throw new RuntimeException("프로그램 전송 실패", callbackException);
             }
-        };
-
-        JSONObject obj = TemplateLoader.load("publish.json");
-        obj.put("sn", terminal.getSn());
-        JSONObject filePaths = obj.getJSONObject("sendProgramFilePaths");
-        filePaths.put("programPath", System.getProperty("user.dir") + "/temp/program/program" + programId);
-        filePaths.put("mediasPath", mediaManager.buildMediasPath());
-
-        sdk.getViplexCore().nvStartTransferProgramAsync(obj.toString(), callBack);
-        AsyncHelper.waitAPIReturn();
-
-        // Main 스레드에서 예외 체크
-        if (callbackException != null) {
-            throw new RuntimeException("프로그램 전송 실패", callbackException);
+        } finally {
+            deleteTempFiles(tempFiles);
         }
     }
 
@@ -163,6 +183,51 @@ public class ProgramManager {
 
         if (callbackException != null) {
             throw new RuntimeException("프로그램 생성 오류", callbackException);
+        }
+    }
+
+    private Map<String, File> copyMediaFilesToTemp(MediaManager mediaManager) {
+        File tempDir = new File(MEDIA_TEMP_PATH);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
+        }
+
+        Map<String, File> tempFiles = new HashMap<>();
+
+        for (Media media : mediaManager.getMedias()) {
+            String originalPath = media.getPath();
+            String md5 = media.getMd5();
+            String extension = media.getExtension();
+
+            File sourceFile = new File(originalPath);
+            File tempFile = new File(tempDir, md5 + extension);
+
+            try {
+                Files.copy(sourceFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                tempFiles.put(originalPath, tempFile);
+            } catch (Exception e) {
+                throw new RuntimeException("미디어 파일 복사 실패: " + originalPath, e);
+            }
+        }
+
+        return tempFiles;
+    }
+
+    private JSONObject buildTempMediasPath(Map<String, File> tempFiles, MediaManager mediaManager) {
+        JSONObject obj = new JSONObject();
+
+        for (Media media : mediaManager.getMedias()) {
+            File tempFile = tempFiles.get(media.getPath());
+            String tempPath = tempFile.getAbsolutePath().replace('\\', '/');
+            obj.put(tempPath, media.getFileName() + media.getExtension());
+        }
+
+        return obj;
+    }
+
+    private void deleteTempFiles(Map<String, File> tempFiles) {
+        for (File file : tempFiles.values()) {
+            file.delete();
         }
     }
 }

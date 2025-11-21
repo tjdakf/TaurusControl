@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.beryx.jlink' version '3.0.1'
 }
 
 group = 'tauruscontrol'
@@ -32,7 +33,9 @@ javafx {
 }
 
 application {
+    mainModule = 'tauruscontrol'
     mainClass = 'tauruscontrol.TaurusControlApp'
+    applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8']
 }
 
 tasks.withType(JavaCompile) {
@@ -48,17 +51,50 @@ test {
     systemProperty 'file.encoding', 'UTF-8'
 }
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'tauruscontrol.TaurusControlApp',
-                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
-        )
-    }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+jlink {
+    forceMerge('org.json', 'jna', 'jna-platform')
 
-    // JavaFX 모듈을 JAR에 포함하지 않음 (jpackage가 처리)
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    mergedModule {
+        requires 'java.logging'
+        requires 'java.desktop'
+        requires 'java.datatransfer'
+    }
+
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+
+    launcher {
+        name = 'TaurusControl'
+        jvmArgs = ['-Dfile.encoding=UTF-8']
+    }
+
+    jpackage {
+        imageName = 'TaurusControl'
+        installerName = 'TaurusControl'
+        appVersion = '1.0.0'
+        installerType = 'msi'
+
+        imageOptions = [
+                '--icon', 'src/main/resources/icon.ico'
+        ]
+
+        installerOptions = [
+            '--vendor', 'TaurusControl',
+            '--description', 'Taurus Series LED Terminal Manager',
+            '--win-menu',
+            '--win-shortcut',
+            '--win-dir-chooser',
+            '--icon', 'src/main/resources/icon.ico'
+        ]
+    }
+}
+
+// jpackageImage가 끝난 후 SDK DLL 파일들을 app/native 폴더로 복사
+tasks.named('jpackageImage') {
+    doLast {
+        copy {
+            from 'src/main/resources/win32-x86-64'
+            into "$buildDir/jpackage/TaurusControl/app/native"
+            include '*.dll'
+        }
     }
 }

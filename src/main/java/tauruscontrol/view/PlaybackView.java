@@ -1,5 +1,6 @@
 package tauruscontrol.view;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -578,9 +579,11 @@ public class PlaybackView extends StackPane {
     }
 
     private void updateProgramProgress(int percent) {
-        if (currentDialog instanceof ProgressWithPercentDialog dialog) {
-            dialog.updateProgress(percent);
-        }
+        Platform.runLater(() -> {
+            if (currentDialog instanceof ProgressWithPercentDialog dialog) {
+                dialog.updateProgress(percent);
+            }
+        });
     }
 
     private void showSuccessDialog() {

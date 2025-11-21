@@ -7,7 +7,6 @@ import tauruscontrol.util.TemplateLoader;
 import java.io.File;
 
 public class SDKManager {
-    private static final String SDK_PATH = "bin";
     private static final String SDK_OUT_PATH = System.getProperty("user.home")
             + File.separator + "TaurusControl" + File.separator + "temp";
 
@@ -17,8 +16,14 @@ public class SDKManager {
 
     private SDKManager() {
         System.setProperty("jna.encoding", "UTF-8");
-        System.setProperty("jna.library.path", SDK_PATH);
-        viplexCore = Native.loadLibrary("viplexcore",ViplexCore.class);
+
+        // jpackage로 배포된 app/native 폴더의 DLL 경로 설정
+        String appDir = System.getProperty("user.dir");
+        String nativePath = appDir + File.separator + "app" + File.separator + "native";
+        System.setProperty("jna.library.path", nativePath);
+
+        viplexCore = Native.load("viplexcore", ViplexCore.class);
+
         initializeSDK();
     }
 

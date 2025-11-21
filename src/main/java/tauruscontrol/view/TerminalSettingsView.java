@@ -130,7 +130,7 @@ public class TerminalSettingsView extends StackPane {
         // 두 번째 줄: LED밝기 설정
         HBox secondRow = new HBox();
         secondRow.setAlignment(Pos.CENTER_LEFT);
-        secondRow.setPadding(new Insets(0, 0, 0, 62));
+        secondRow.setPadding(new Insets(0, 0, 0, 55));
 
         VBox brightnessIcon = createIconButton(
                 "/icons/brightness.png",

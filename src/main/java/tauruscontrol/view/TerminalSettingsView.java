@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.util.UIConstants;
+import tauruscontrol.util.UIHelper;
 import tauruscontrol.view.components.BrightnessDialog;
 import tauruscontrol.view.components.RebootScheduleDialog;
 import tauruscontrol.view.components.TimeSyncDialog;
@@ -266,33 +267,11 @@ public class TerminalSettingsView extends StackPane {
     }
 
     private HBox createNoTerminalMessageRow() {
-        HBox row = new HBox();
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(UIConstants.SPACING_MEDIUM, UIConstants.SPACING_MEDIUM,
-                UIConstants.SPACING_MEDIUM, UIConstants.SPACING_LARGE));
-        row.setMinHeight(UIConstants.ROW_HEIGHT);
-        row.setPrefHeight(UIConstants.ROW_HEIGHT);
-        row.setStyle("-fx-background-color: #3a3a3a;");
-
-        Label messageLabel = new Label("로그인 된 터미널이 없습니다.");
-        messageLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 13px;");
-
-        row.getChildren().add(messageLabel);
-        return row;
+        return UIHelper.createMessageRow("로그인 된 터미널이 없습니다.");
     }
 
     private HBox createEmptyTerminalRow(int index) {
-        HBox row = new HBox();
-        row.setMinHeight(UIConstants.ROW_HEIGHT);
-        row.setPrefHeight(UIConstants.ROW_HEIGHT);
-
-        String bgColor = "#3a3a3a";
-        if (index % 2 == 1) {
-            bgColor = "#323232";
-        }
-        row.setStyle("-fx-background-color: " + bgColor + ";");
-
-        return row;
+        return UIHelper.createEmptyRow(index);
     }
 
     private void handleTimeSync() {

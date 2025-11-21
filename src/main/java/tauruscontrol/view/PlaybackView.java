@@ -14,6 +14,7 @@ import tauruscontrol.domain.media.Media;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.domain.terminal.TerminalManager;
 import tauruscontrol.util.UIConstants;
+import tauruscontrol.util.UIHelper;
 import tauruscontrol.view.components.ConfirmDialog;
 import tauruscontrol.view.components.ErrorDialog;
 import tauruscontrol.view.components.ProgressDialog;
@@ -337,32 +338,11 @@ public class PlaybackView extends StackPane {
     }
 
     private HBox createNoTerminalMessageRow() {
-        HBox row = new HBox();
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(10, 10, 10, 20));
-        row.setMinHeight(40);
-        row.setPrefHeight(40);
-        row.setStyle("-fx-background-color: #3a3a3a;");
-
-        Label messageLabel = new Label("로그인 된 터미널이 없습니다.");
-        messageLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 13px;");
-
-        row.getChildren().add(messageLabel);
-        return row;
+        return UIHelper.createMessageRow("로그인 된 터미널이 없습니다.");
     }
 
     private HBox createEmptyTerminalRow(int index) {
-        HBox row = new HBox();
-        row.setMinHeight(40);
-        row.setPrefHeight(40);
-
-        String bgColor = "#3a3a3a";
-        if (index % 2 == 1) {
-            bgColor = "#323232";
-        }
-        row.setStyle("-fx-background-color: " + bgColor + ";");
-
-        return row;
+        return UIHelper.createEmptyRow(index);
     }
 
     private void renderMediaList() {

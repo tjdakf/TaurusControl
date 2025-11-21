@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import tauruscontrol.controller.LoginController;
 import tauruscontrol.domain.terminal.Terminal;
 import tauruscontrol.util.UIConstants;
+import tauruscontrol.util.UIHelper;
 import tauruscontrol.view.components.ErrorDialog;
 import tauruscontrol.view.components.PasswordDialog;
 import tauruscontrol.view.components.ProgressDialog;

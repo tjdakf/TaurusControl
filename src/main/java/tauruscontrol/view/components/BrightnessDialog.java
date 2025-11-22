@@ -24,6 +24,7 @@ public class BrightnessDialog extends BaseSettingDialog {
     private ErrorDialog errorDialog;
     private boolean isUpdatingFromSlider = false;
     private boolean isUpdatingFromField = false;
+    private boolean isProcessing = false;
     private int lastSentValue = 50;
 
     public BrightnessDialog(Terminal terminal, Runnable onClose) {
@@ -86,7 +87,7 @@ public class BrightnessDialog extends BaseSettingDialog {
         brightnessSlider.setMajorTickUnit(10);
         brightnessSlider.setMinorTickCount(0);
         brightnessSlider.setBlockIncrement(1);
-        brightnessSlider.setSnapToTicks(true);
+        brightnessSlider.setSnapToTicks(false);
 
         brightnessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingFromField) {
@@ -97,7 +98,12 @@ public class BrightnessDialog extends BaseSettingDialog {
             }
         });
 
-        brightnessSlider.setOnMouseReleased(e -> handleBrightnessSet());
+        brightnessSlider.setOnMouseReleased(e -> {
+            int currentValue = (int) brightnessSlider.getValue();
+            if (currentValue != lastSentValue) {
+                handleBrightnessSet();
+            }
+        });
 
         HBox fieldBox = new HBox(5);
         fieldBox.setAlignment(Pos.CENTER);
@@ -204,8 +210,10 @@ public class BrightnessDialog extends BaseSettingDialog {
             }
             field.setText(String.valueOf(value));
             updateSliderFromField(value);
-            handleBrightnessSet();
-            this.requestFocus();
+
+            if (value != lastSentValue) {
+                handleBrightnessSet();
+            }
         });
 
         return field;
@@ -233,7 +241,6 @@ public class BrightnessDialog extends BaseSettingDialog {
             brightnessField.setText(String.valueOf(value));
             updateSliderFromField(value);
             handleBrightnessSet();
-            this.requestFocus();
         });
 
         return button;
@@ -264,6 +271,11 @@ public class BrightnessDialog extends BaseSettingDialog {
     }
 
     private void loadBrightness() {
+        if (isProcessing) {
+            return;
+        }
+
+        isProcessing = true;
         showLoadingDialog();
 
         controller.loadBrightness(
@@ -273,9 +285,11 @@ public class BrightnessDialog extends BaseSettingDialog {
                     brightnessSlider.setValue(value);
                     brightnessField.setText(String.valueOf(value));
                     lastSentValue = value;
+                    isProcessing = false;
                     hideLoadingDialog();
                 },
                 error -> {
+                    isProcessing = false;
                     hideLoadingDialog();
                     showErrorDialog(error);
                 }
@@ -283,6 +297,11 @@ public class BrightnessDialog extends BaseSettingDialog {
     }
 
     private void handleBrightnessSet() {
+        if (isProcessing) {
+            return;
+        }
+
+        isProcessing = true;
         final int value = parseBrightness(brightnessField.getText());
         float brightness = value;
 
@@ -293,9 +312,11 @@ public class BrightnessDialog extends BaseSettingDialog {
                 brightness,
                 () -> {
                     lastSentValue = value;
+                    isProcessing = false;
                     hideLoadingDialog();
                 },
                 error -> {
+                    isProcessing = false;
                     hideLoadingDialog();
                     showErrorDialog(error);
                 }

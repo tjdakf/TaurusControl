@@ -3,8 +3,6 @@
 Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용할 수 있도록 개선한 Windows 데스크톱 애플리케이션입니다.
 직관적인 UI와 다양한 기능으로 터미널 제어를 간편하게 수행할 수 있습니다.
 
----
-
 ## Features
 
 ### 🔍 터미널 검색 및 관리
@@ -12,11 +10,15 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용�
 - 저장된 비밀번호로 자동 로그인
 - 로그인 상태 실시간 표시 (녹색/노란색/회색)
 
+![login-demo](docs/gifs/login-demo.gif)
+
 ### 🎬 미디어 재생 관리
 - 미디어 파일 추가/삭제/순서 변경
 - 지원 포맷: mp4, avi, jpg, png, gif
 - **한글 파일명 완벽 지원**
 - 키보드 단축키로 빠른 작업
+
+![playback-demo](docs/gifs/playback-demo.gif)
 
 ### ⏰ 전원 스케줄 설정
 - 요일/시간별 자동 ON/OFF 설정
@@ -24,12 +26,14 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용�
 - 수동 모드 / 자동 모드 전환
 - 한글로 표시되는 직관적인 스케줄
 
+![schedule-demo](docs/gifs/schedule-demo.gif)
+
 ### ⚙️ 터미널 설정
 - PC 시간과 자동 동기화
 - 재부팅 스케줄 설정
 - LED 밝기 조절 (0-100%)
 
----
+![settings-demo](docs/gifs/settings-demo.gif)
 
 ## Installation
 
@@ -40,15 +44,11 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용�
 3. 설치 마법사 지시에 따라 설치
 4. 시작 메뉴 또는 바탕화면 아이콘으로 실행
 
----
-
 ## System Requirements
 
 - **운영체제**: Windows 7 / 10 / 11 (64bit)
 - **네트워크**: Taurus 터미널과 동일 LAN 연결 필수
 - **디스크 공간**: 250MB 이상 필요
-
----
 
 ## Quick Start
 
@@ -57,8 +57,6 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용�
 3. **미디어 업로드**: 재생관리 탭 → 파일 선택 → 전송
 
 자세한 사용 방법은 [사용자 매뉴얼 PDF](https://github.com/tjdakf/TaurusControl/releases)를 참고하세요.
-
----
 
 ## Troubleshooting
 
@@ -76,19 +74,13 @@ Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용�
 - 관리자 권한으로 실행 시도
 - 프로그램 재설치
 
----
-
 ## For Developers
 
 개발 관련 문서는 [DEVELOPMENT.md](DEVELOPMENT.md)를 참고하세요.
 
----
-
 ## Changelog
 
 전체 변경 이력은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
-
----
 
 ## License
 

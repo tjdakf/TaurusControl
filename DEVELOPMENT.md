@@ -154,6 +154,23 @@ Platform.runLater(() -> {
 
 ViplexCore SDK는 Windows 64bit 전용입니다.
 
+### Application Data Location
+
+프로그램 실행 시 다음 위치에 데이터가 생성됩니다:
+
+```
+C:\Users\(사용자명)\TaurusControl\
+```
+
+**저장되는 파일**:
+- 애플리케이션 실행 로그
+- 데이터베이스 (터미널 정보, 로그인 비밀번호 등)
+- 프로그램 생성 정보
+
+**디버깅 팁**:
+- 로그 파일 확인: `C:\Users\tjdak\TaurusControl\temp\log\*.log`
+- 데이터 초기화: 위 폴더 전체 삭제 후 재실행
+
 ---
 
 ## Initial Requirements (Historical)

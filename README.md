@@ -1,121 +1,95 @@
 # Taurus Control
 
-Novastar에서 제공하는 Viplex Express를 더욱 쉽게 사용할 수 있도록 개선한 Taurus Series 제어 프로그램입니다.
+Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용할 수 있도록 개선한 Windows 데스크톱 애플리케이션입니다.
+직관적인 UI와 다양한 기능으로 터미널 제어를 간편하게 수행할 수 있습니다.
+
+---
 
 ## Features
-- 동일한 LAN에 접속된 Taurus 터미널 탐색
-- 터미널 로그인/로그아웃
-- 미디어 재생 관리
-- 원클릭 터미널 초기 설정
-- LED화면 밝기 설정
-- ON/OFF 타이머 설정
 
-## 실행 요구사항
-- JDK 21 버전 이상
-- Windows 64bit 운영체제
-- Taurus Series 제품이 동일한 LAN에 연결되어 있어야 모든 기능을 사용할 수 있음
+### 🔍 터미널 검색 및 관리
+- 동일 네트워크 내 Taurus 터미널 자동 검색
+- 저장된 비밀번호로 자동 로그인
+- 로그인 상태 실시간 표시 (녹색/노란색/회색)
 
-## 기능 요구사항
-### 프로그램 초기화
-- ViplexCore 객체 생성(싱글턴 패턴)
-- 객체 생성 시 `int nvInit(const char *sdkRootDir, const char *credentials)`으로 프로그램 초기화 진행
+### 🎬 미디어 재생 관리
+- 미디어 파일 추가/삭제/순서 변경
+- 지원 포맷: mp4, avi, jpg, png, gif
+- **한글 파일명 완벽 지원**
+- 키보드 단축키로 빠른 작업
 
-### 터미널 관리
-- `void nvSearchTerminalAsync(ExportViplexCallback callback)`를 이용하여 동일한 LAN에 접속된 터미널을 탐색
-- 터미널 이름과 해상도, 로그인 여부를 표시
-- 비밀번호를 알고 있는 경우 자동 로그인
+### ⏰ 전원 스케줄 설정
+- 요일/시간별 자동 ON/OFF 설정
+- 여러 시간대 등록 가능
+- 수동 모드 / 자동 모드 전환
+- 한글로 표시되는 직관적인 스케줄
 
-### 로그인 기능
-- 검색된 터미널 중 로그인되지 않은 터미널을 선택하여 로그인
-- 사용자에게 비밀번호를 입력받아 로그인
-- `void nvLoginAsync(const char *data,ExportViplexCallback callback)` 사용
+### ⚙️ 터미널 설정
+- PC 시간과 자동 동기화
+- 재부팅 스케줄 설정
+- LED 밝기 조절 (0-100%)
 
-### 미디어 재생 관리
-- 로그인 된 터미널은 미디어 재생 관리를 할 수 있음
-- 로그인 된 터미널은 터미널 SN번호와 같은 이름의 재생 목록을 한 개 가짐
-- `void nvGetProgramAsync(const char *data, ExportViplexCallback callback)`로 프로그램 목록을 조회하여
-미디어 재생 관리를 하려는 프로그램을 선택
-- 미디어 파일(VIDEO, IMAGE, GIF)의 경로를 입력받아 재생 목록에 추가
-- 미디어 파일 경로 입력은 엔터로 구분
-- 아무것도 입력하지 않고 엔터 입력 시 입력 종료
-- 미디어 파일 추가가 종료되면 
-  - `void nvSetPageProgramAsync(const char *data, ExportViplexCallback callBack)`를 이용하여 프로그램 수정
-  - `void nvMakeProgramAsync(const char *data, ExportViplexCallback callBack)` 를 이용하여 로컬에 프로그램 생성
-- 사용자에게 전송 승인 입력 받기
-- 승인 후 터미널에 프로그램 전송
+---
 
-### 원클릭 터미널 초기 설정
-- 터미널의 시간 동기화 설정과 재부팅 타이머를 설정함
-- 로그인 된 터미널 목록을 불러오며, 사용자는 설정할 터미널을 선택
-- 재부팅 요일과 시간을 입력받음(1주일에 1회 설정)
-- `void void nvSetReBootTaskAsync(const char *data, ExportViplexCallback callback)`를 이용하여 재부팅 설정
-- 터미널 시간 설정을 현재 PC의 로컬 시간과 동기화 시킴
-- `void nvCalibrateTimeAsync(const char *data, ExportViplexCallback callback)` 사용
+## Installation
 
-### LED화면 밝기 설정
-- 로그인 된 터미널 목록을 불러오며, 사용자는 설정할 터미널을 선택
-- `void nvGetScreenBrightnessAsync(const char *data, ExportViplexCallback callback)`를 이용하여 현재 밝기 값을 표시하며,
-변경할 밝기 값을 입력받음
-- `void nvSetScreenBrightnessAsync(const char *data, ExportViplexCallback callback)`를 이용하여 밝기값 변경
+### Windows 인스톨러 (.msi)
 
-### ON/OFF 타이머 설정
-- 로그인 된 터미널 목록을 불러오며, 사용자는 설정할 터미널을 선택
-- 현재 설정 값을 표시
-  - MANUAL: 항상 ON 상태
-  - SCHEDULE: 지정된 시간에 따라 ON/OFF, 설정된 시간도 함께 표시
-- 사용자는 설정 값을 변경할 수 있음
-  - MANUAL로 변경: 항상 ON 상태로 변경
-  - SCHEDULE로 변경 :
-    - ON/OFF 시간을 입력받음
-    - `void nvSetScreenPowerPolicyAsync(const char *data, ExportViplexCallback callback)`를 사용하여 설정
+1. [Releases](https://github.com/tjdakf/TaurusControl/releases) 페이지에서 최신 버전 다운로드
+2. `TaurusControl-1.0.0.msi` 파일 실행
+3. 설치 마법사 지시에 따라 설치
+4. 시작 메뉴 또는 바탕화면 아이콘으로 실행
 
-## 구현할 기능 목록
-### 프로그램 초기화
-- [x] ViplexCore 객체를 생성하고 SDK초기화 진행
-- [x] 싱글턴 패턴을 적용하여 전역적으로 한 번의 초기화와 한 가지의 객체만 사용되도록 구현
+---
 
-### 터미널 관리
-- [x] 동일한 LAN에 접속된 터미널을 탐색
-- [x] 터미널 이름, SN번호, 해상도, 로그인 여부, 비밀번호 여부 저장
-- [x] 검색된 터미널 개수 확인 기능
-- [x] 로그인 여부, 터미널 이름순으로 정렬
+## System Requirements
 
-### 로그인 기능
-- [x] 터미널 로그인 기능 구현
-- [x] 비밀번호가 다르면 예외 처리
+- **운영체제**: Windows 7 / 10 / 11 (64bit)
+- **네트워크**: Taurus 터미널과 동일 LAN 연결 필수
+- **디스크 공간**: 250MB 이상 필요
 
-### 미디어 재생 관리
-- [x] 터미널 객체를 입력받아 같은 이름의 프로그램이 로컬에 존재하는지 확인
-  - 프로그램이 존재하면 프로그램 ID 반환
-  - 프로그램이 존재하지 않으면 SN번호를 이름으로, 해상도에 맞게 프로그램을 생성하여 ID 반환
-- [x] 미디어 파일 경로를 입력받아 존재하는 파일인지 확인
-- [x] 미디어 파일의 MD5 해시값을 구함
-- [x] 미디어 데이터 저장 기능
-- [x] 미디어 파일 전송 데이터를 가진 JSON 객체 생성
-- [x] 전송할 미디어 데이터 JSON 객체를 프로그램 수정 JSON템플릿으로 생성한 JSON 객체에 주입
-- [x] 최종 JSON 객체로 프로그램 수정
-- [x] 수정된 프로그램 정보 로컬에 저장
-- [x] 로컬에 저장된 프로그램을 터미널로 전송
+---
 
-### 원클릭 터미널 초기 설정
-- [x] 터미널 객체를 입력받아 해당 터미널의 시간 설정을 현재 PC의 로컬 시간으로 조정
-- [x] 현재 터미널의 재부팅 설정 시간을 반환
-- [x] 객체, 요일, 시간을 입력받아 재부팅 설정
+## Quick Start
 
-### LED화면 밝기 설정
-- [x] 현재 터미널의 밝기를 조회
-- [x] 현재 터미널의 밝기를 변경
+1. **터미널 검색**: 프로그램 실행 → 로그인 관리 → 터미널 검색
+2. **로그인**: 터미널 선택 → 비밀번호 입력 → 로그인
+3. **미디어 업로드**: 재생관리 탭 → 파일 선택 → 전송
 
-### ON/OFF 타이머 설정
-- [x] 현재 터미널의 타이머 설정을 조회(MANUAL or AUTO)
-- [x] 현재 터미널의 ON/OFF 상태를 조회
-- [x] AUTO면 설정된 시간을 조회
-- [x] 타이머 설정 타입 변경(MANUAL or SCHEDULE)
-- [x] MANUAL ON/OFF 기능
-- [x] SCHEDULE 타임 설정
+자세한 사용 방법은 [사용자 매뉴얼 PDF](https://github.com/tjdakf/TaurusControl/releases)를 참고하세요.
 
-### GUI View
-- JavaFX로 간단한 프로그램 화면 구성 
+---
 
-### 보류 기능
-- [ ] 터미널 탐색 후 비밀번호를 가지고 있으면 자동 로그인
+## Troubleshooting
+
+### 터미널이 검색되지 않아요
+- 터미널과 PC가 같은 네트워크에 연결되어 있는지 확인
+- 방화벽 설정 확인
+- Viplex Express가 사용중인지 확인 (동시에 사용할 수 없습니다.)
+
+### 로그인이 안돼요
+- 비밀번호가 정확한지 확인
+- 비밀번호 오류가 3회 이상 넘어갈 시 Taurus 자체적으로 1분 간 모든 로그인 시도를 막습니다. 일정 시간이 지난 후 다시 시도하세요.
+
+### 프로그램이 실행되지 않아요
+- Windows 버전 확인
+- 관리자 권한으로 실행 시도
+- 프로그램 재설치
+
+---
+
+## For Developers
+
+개발 관련 문서는 [DEVELOPMENT.md](DEVELOPMENT.md)를 참고하세요.
+
+---
+
+## Changelog
+
+전체 변경 이력은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

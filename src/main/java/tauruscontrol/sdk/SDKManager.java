@@ -2,9 +2,9 @@ package tauruscontrol.sdk;
 
 import com.sun.jna.Native;
 import org.json.JSONObject;
-import tauruscontrol.util.TemplateLoader;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class SDKManager {
     private static final String SDK_OUT_PATH = System.getProperty("user.home")
@@ -17,12 +17,18 @@ public class SDKManager {
     private SDKManager() {
         System.setProperty("jna.encoding", "UTF-8");
 
-        // jpackage로 배포된 app/native 폴더의 DLL 경로 설정
-        String appDir = System.getProperty("user.dir");
-        String nativePath = appDir + File.separator + "app" + File.separator + "native";
-        System.setProperty("jna.library.path", nativePath);
+        SDKConfiguration.validateSupportedPlatform();
+        Path sdkDirectory = SDKConfiguration.requireSdkDirectory(SDKConfiguration.resolveSdkDirectory());
+        System.setProperty("jna.library.path", sdkDirectory.toString());
 
-        viplexCore = Native.load("viplexcore", ViplexCore.class);
+        try {
+            viplexCore = Native.load("viplexcore", ViplexCore.class);
+        } catch (UnsatisfiedLinkError e) {
+            throw new IllegalStateException(
+                    "NovaStar T-SDK를 로드하지 못했습니다. SDK 경로와 하위 DLL 의존성을 확인하세요: " + sdkDirectory,
+                    e
+            );
+        }
 
         initializeSDK();
     }
@@ -44,9 +50,9 @@ public class SDKManager {
         }
 
         viplexCore.nvSetDevLang("Java");
-        JSONObject credentials = TemplateLoader.load("credentials.json");
+        JSONObject credentials = SDKConfiguration.loadCredentials(SDKConfiguration.resolveCredentialsPath());
 
-        if (viplexCore.nvInit(SDK_OUT_PATH,credentials.toString()) != 0) {
+        if (viplexCore.nvInit(SDK_OUT_PATH, credentials.toString()) != 0) {
             throw new RuntimeException("SDK 초기화 실패");
         }
     }

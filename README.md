@@ -1,115 +1,68 @@
-# Taurus Control
+# TaurusControl
 
-Novastar에서 제공하는 Viplex Express를 더욱 쉽고 편리하게 사용할 수 있도록 개선한 Windows 데스크톱 애플리케이션입니다.
-직관적인 UI와 다양한 기능으로 터미널 제어를 간편하게 수행할 수 있습니다.
+NovaStar Taurus 장비의 검색·로그인, 미디어 전송, 전원 스케줄과 화면 설정을 한 화면에서 다루기 위해 만든 JavaFX 기반 Windows 애플리케이션입니다. Java에서 T-SDK의 네이티브 API를 호출할 수 있도록 JNA로 연결하고, 비동기 콜백 결과를 애플리케이션 상태와 UI에 반영했습니다.
 
-## Features
+| 항목 | 내용 |
+| --- | --- |
+| 개발 상태 | Java·Spring 기본기 학습을 우선하며 추가 개발 일시 중단 |
+| 검증 범위 | 실제 Taurus 장비에서 아래 핵심 기능 테스트 |
+| 운영 범위 | 고객 현장 배포 및 장기 운영 이력 없음 |
+| 검증한 SDK | NovaStar T-SDK `3.6.3.0101` / Windows x64 |
 
-### 🔍 터미널 검색 및 관리
-- 동일 네트워크 내 Taurus 터미널 자동 검색
-- 저장된 비밀번호로 자동 로그인
-- 로그인 상태 실시간 표시 (녹색/노란색/회색)
+## 해결하려던 문제
 
-![login-demo](docs/gifs/login-demo.gif)
+Taurus 장비를 운영할 때 반복하는 터미널 탐색·로그인, 미디어 구성·전송, 전원 및 화면 설정을 하나의 UI에서 처리하도록 작업 범위를 정했습니다. SDK가 제공하는 콜백 기반 API와 JSON 요청 형식을 분석하고, 화면·컨트롤러·서비스/도메인·SDK 연동 계층으로 역할을 나누어 구현했습니다.
 
-### 🎬 미디어 재생 관리
-- 미디어 파일 추가/삭제/순서 변경
-- 지원 포맷: mp4, avi, jpg, png, gif
-- **한글 파일명 완벽 지원**
-- 키보드 단축키로 빠른 작업
+## 구현 및 장비 검증 범위
 
-![playback-demo](docs/gifs/playback-demo.gif)
+- 동일 LAN의 Taurus 터미널 검색, 로그인 및 상태 표시
+- 이미지·영상·GIF 재생 목록 구성, 순서 변경 및 장비 전송
+- 한글 파일명이 포함된 미디어 전송
+- 화면 ON/OFF 스케줄과 수동 모드 설정
+- 시간 동기화, 재부팅 스케줄 및 밝기 설정
 
-### ⏰ 전원 스케줄 설정
-- 요일/시간별 자동 ON/OFF 설정
-- 여러 시간대 등록 가능
-- 수동 모드 / 자동 모드 전환
-- 한글로 표시되는 직관적인 스케줄
+![미디어 재생 관리 데모](docs/gifs/playback-demo.gif)
 
-![schedule-demo](docs/gifs/schedule-demo.gif)
+<details>
+<summary>다른 기능 데모 보기</summary>
 
-### ⚙️ 터미널 설정
-- PC 시간과 자동 동기화
-- 재부팅 스케줄 설정
-- LED 밝기 조절 (0-100%)
+### 터미널 검색과 로그인
 
-![settings-demo](docs/gifs/settings-demo.gif)
+![터미널 검색과 로그인 데모](docs/gifs/login-demo.gif)
 
-## Installation
+### 전원 스케줄
 
-### Windows 인스톨러 (.msi)
+![전원 스케줄 데모](docs/gifs/schedule-demo.gif)
 
-1. [Releases](https://github.com/tjdakf/TaurusControl/releases) 페이지에서 최신 버전 다운로드
-2. `TaurusControl-1.0.0.msi` 파일 실행
-3. 설치 마법사 지시에 따라 설치
-4. 시작 메뉴 또는 바탕화면 아이콘으로 실행
+### 터미널 설정
 
-## System Requirements
+![터미널 설정 데모](docs/gifs/settings-demo.gif)
 
-- **운영체제**: Windows 7 / 10 / 11 (64bit)
-- **네트워크**: Taurus 터미널과 동일 LAN 연결 필수
-- **디스크 공간**: 250MB 이상 필요
+</details>
 
-## Quick Start
+## 문제 해결 사례: 한글 파일명 전송
 
-1. **터미널 검색**: 프로그램 실행 → 로그인 관리 → 터미널 검색
-2. **로그인**: 터미널 선택 → 비밀번호 입력 → 로그인
-3. **미디어 업로드**: 재생관리 탭 → 파일 선택 → 전송
+SDK 가이드에 따라 미디어 전송을 구현한 뒤 한글 파일명에서 콜백 오류가 발생하는 상황을 확인했습니다. 원본 파일명은 화면 표시와 프로그램 정보에 유지하되, 전송 시에는 SDK로 계산한 MD5를 이름으로 사용하는 임시 파일을 만들도록 변경했습니다. 전송 완료 후 임시 파일을 삭제하고, 한글 파일이 포함된 재생 목록이 실제 장비에서 동작하는지 확인했습니다.
 
-자세한 사용 방법은 [사용자 매뉴얼 PDF](https://github.com/tjdakf/TaurusControl/releases)를 참고하세요.
+## 역할과 AI 활용
 
-## Troubleshooting
+요구사항을 선정하고 T-SDK의 API와 비동기 콜백 흐름을 분석했습니다. 구현과 리팩터링에는 생성형 AI를 적극 활용했으며, 생성된 결과를 그대로 완료로 판단하지 않고 SDK 문서, 실행 결과와 실제 Taurus 장비 동작을 기준으로 확인했습니다. 핵심 기능 검증 후에는 Java와 Spring의 기본기 학습을 우선하기 위해 추가 개발을 멈췄습니다.
 
-### 터미널이 검색되지 않아요
-- 터미널과 PC가 같은 네트워크에 연결되어 있는지 확인
-- 방화벽 설정 확인
-- Viplex Express가 사용중인지 확인 (동시에 사용할 수 없습니다.)
+## 기술 구성
 
-### 로그인이 안돼요
-- 비밀번호가 정확한지 확인
-- 비밀번호 오류가 3회 이상 넘어갈 시 Taurus 자체적으로 1분 간 모든 로그인 시도를 막습니다. 일정 시간이 지난 후 다시 시도하세요.
+- Java 21, JavaFX 21
+- Gradle, JUnit 5, AssertJ
+- JNA 기반 NovaStar T-SDK 연동
+- JSON 템플릿 기반 SDK 요청 구성
 
-### 프로그램이 실행되지 않아요
-- Windows 버전 확인
-- 관리자 권한으로 실행 시도
-- 프로그램 재설치
+자세한 구조와 개발 명령은 [개발 가이드](DEVELOPMENT.md), SDK 준비 방법은 [SDK 설정 가이드](docs/SDK_SETUP.md)를 참고해 주세요.
 
----
+## 실행 전 확인
 
-## Uninstallation
-
-### 프로그램 제거
-
-1. **Windows 설정에서 제거**
-   - 설정 → 설치된 앱 → TaurusControl 선택 → 제거
-
-2. **사용자 데이터 삭제 (선택사항)**
-
-   프로그램 제거 후에도 아래 폴더에 데이터가 남아있습니다:
-   ```
-   C:\Users\(사용자명)\TaurusControl
-   ```
-
-   **포함 내용**:
-   - 실행 로그 파일
-   - 데이터베이스 (터미널 로그인 정보, 비밀번호 등)
-   - 프로그램 설정
-
-   **완전 삭제 방법**:
-   - 위 폴더를 수동으로 삭제하세요.
-
-   ⚠️ **주의**: 프로그램을 재설치할 예정이라면 이 폴더를 유지하세요. 저장된 설정과 로그인 정보가 보존됩니다.
-
----
-
-## For Developers
-
-개발 관련 문서는 [DEVELOPMENT.md](DEVELOPMENT.md)를 참고하세요.
-
-## Changelog
-
-전체 변경 이력은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
+- 소스 빌드와 테스트에는 JDK 21이 필요합니다.
+- 실제 애플리케이션 실행과 장비 연동에는 Windows x64, 검증한 T-SDK, 동일 LAN의 Taurus 장비가 필요합니다.
+- 특정 Windows 버전별 호환성 범위와 최신 T-SDK 호환성은 별도로 검증하지 않았습니다.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+직접 작성한 프로젝트 소스는 [MIT License](LICENSE)를 따릅니다. NovaStar T-SDK와 SDK에 포함된 제3자 파일은 이 라이선스의 적용 대상이 아닙니다. 자세한 구분은 [Third-Party Notices](THIRD_PARTY_NOTICES.md)를 확인해 주세요.

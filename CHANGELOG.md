@@ -4,6 +4,16 @@ All notable changes to TaurusControl will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Documentation
+
+- 실제 Taurus 장비 검증 범위와 고객 현장 미배포 상태 명시
+- 생성형 AI 활용 범위와 프로젝트 중단 배경 기록
+- 검증한 T-SDK `3.6.3.0101`의 공식 배포본, 해시 및 로컬 설정 방법 추가
+- 직접 작성한 소스와 제3자 SDK의 라이선스 경계 명시
+- 검증하지 않은 Windows 버전, 최신 SDK 호환성 및 비동기 안전성 표현 정정
+
 ## [1.0.0] - 2025-11-23
 
 ### Added
@@ -16,7 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **재생 관리 기능**
   - 미디어 파일 추가/삭제/순서 변경
   - 지원 포맷: mp4, avi, jpg, png, gif
-  - 한글 파일명 완벽 지원 (MD5 해시 기반 처리)
+  - 한글 파일명 미디어 전송 지원 (MD5 기반 임시 파일 사용)
   - 키보드 단축키 지원 (DELETE: 삭제, UP/DOWN: 선택 변경)
   - 진행률 표시와 함께 프로그램 전송
 
@@ -53,7 +63,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - CSS 기반 다크 테마 UI
 
 - **주요 특징**
-  - UTF-8 인코딩 완벽 지원
+  - UTF-8 인코딩 적용
   - CRON 기반 스케줄링
   - 스마트 스크롤 및 키보드 단축키
-  - Thread-safe 비동기 처리

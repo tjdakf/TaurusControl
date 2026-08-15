@@ -1,6 +1,6 @@
-# Taurus Control - Development Guide
+# TaurusControl Development Guide
 
-이 문서는 TaurusControl 프로젝트를 개발하기 위한 환경 설정 및 빌드 방법을 안내합니다.
+이 문서는 프로젝트 소스를 검토하고 테스트하거나, 별도로 준비한 T-SDK를 이용해 실제 Taurus 장비와 연동하는 방법을 설명합니다.
 
 ---
 
@@ -10,9 +10,11 @@
 
 - **JDK**: 21 이상
 - **Gradle**: 포함됨 (gradlew 사용)
-- **운영체제**: Windows 64bit (ViplexCore SDK 제약)
-- **네트워크**: Taurus 터미널과 동일 LAN 연결 (실제 테스트용 터미널이 필요합니다.)
+- **소스 빌드·테스트**: T-SDK와 실제 장비 없이 가능
+- **애플리케이션 실행·장비 연동**: Windows x64, T-SDK `3.6.3.0101`, 동일 LAN의 Taurus 장비 필요
 - **IDE**: IntelliJ IDEA 권장
+
+특정 Windows 버전별 호환성 범위와 T-SDK 최신 버전의 호환성은 검증하지 않았습니다.
 
 ### Clone Repository
 
@@ -23,24 +25,20 @@ cd TaurusControl
 
 ### SDK Setup
 
-ViplexCore SDK 파일들이 다음 디렉토리에 위치해야 합니다:
+NovaStar 공식 배포본을 별도로 받아 기본 경로인 `sdk/win32-x86-64/`에 준비합니다. 다른 위치를 사용하려면 JVM 시스템 속성 `tauruscontrol.sdk.path` 또는 환경 변수 `TAURUSCONTROL_SDK_PATH`로 지정할 수 있습니다.
 
-**경로**: `src/main/resources/win32-x86-64/`
-
-**필수 파일**:
-- `viplexcore.dll` (핵심 네이티브 라이브러리)
-- 기타 SDK 종속 DLL 파일들
-
-**주의**: SDK 파일들은 Windows 전용이며, Git에 포함되어 있습니다.
+검증한 정확한 버전, 공식 다운로드 주소, 해시와 배치 방법은 [SDK 설정 가이드](docs/SDK_SETUP.md)를 따르세요. T-SDK 및 동봉된 제3자 파일은 이 프로젝트의 MIT License 대상이 아니며 저장소에서 재배포하지 않습니다.
 
 ### Credentials Configuration
 
-SDK 인증을 위해 `src/main/resources/templates/credentials.json` 파일이 필요합니다.
+SDK 초기화에 사용할 연락처 정보를 로컬 설정 파일에 입력합니다.
 
 **설정 방법**:
-1. 템플릿 파일 확인
-2. 인증 정보 입력
+1. `config/credentials.example.json`을 `config/credentials.json`으로 복사
+2. 예제 값을 본인의 정보로 교체
 3. UTF-8 인코딩 유지
+
+다른 위치를 사용하려면 JVM 시스템 속성 `tauruscontrol.credentials.path` 또는 환경 변수 `TAURUSCONTROL_CREDENTIALS_PATH`로 지정할 수 있습니다. 실제 `credentials.json`은 커밋하지 않습니다.
 
 ---
 
@@ -51,6 +49,8 @@ SDK 인증을 위해 `src/main/resources/templates/credentials.json` 파일이 �
 ```bash
 ./gradlew build
 ```
+
+네이티브 SDK를 호출하지 않는 도메인·유틸리티 테스트는 T-SDK와 실제 장비 없이 실행할 수 있습니다.
 
 ### Run (Development Mode)
 
@@ -74,11 +74,14 @@ Windows 환경에서 WiX Toolset 설치 후:
 ./gradlew jpackage
 ```
 
-생성된 `.msi` 파일은 `build/jpackage/` 디렉토리에 위치합니다.
+생성된 `.msi` 파일은 `build/jpackage/` 디렉토리에 위치합니다. 설치 후 실행하기 전에 `config/credentials.example.json`을 `%USERPROFILE%\TaurusControl\config\credentials.json`으로 복사하고 예제 값을 교체하세요.
 
 **요구사항**:
 - Windows 64bit
 - WiX Toolset 3.11 이상
+- 로컬에 준비한 T-SDK 런타임
+
+SDK가 포함된 설치 파일을 외부에 배포하기 전에는 NovaStar의 재배포 조건을 별도로 확인해야 합니다.
 
 ---
 
@@ -90,7 +93,7 @@ Windows 환경에서 WiX Toolset 설치 후:
 - **UI Framework**: JavaFX 21
 - **Build Tool**: Gradle
 - **Native Integration**: JNA (Java Native Access)
-- **SDK**: T-SDK (Novastar)
+- **SDK**: NovaStar T-SDK `3.6.3.0101` / Windows x64
 
 ### Package Structure
 
@@ -122,7 +125,7 @@ tauruscontrol/
 
 ### SDK Async Callbacks
 
-모든 SDK 메서드는 비동기 콜백 방식입니다:
+이 프로젝트에서 사용하는 주요 SDK 메서드는 비동기 콜백 방식입니다:
 
 ```java
 sdk.someMethodAsync(request, (code, data) -> {
@@ -136,7 +139,7 @@ sdk.someMethodAsync(request, (code, data) -> {
 AsyncHelper.waitAPIReturn();  // Block until callback
 ```
 
-### JavaFX Thread Safety
+### JavaFX UI Update
 
 UI 업데이트는 반드시 JavaFX Application Thread에서:
 
@@ -150,9 +153,9 @@ Platform.runLater(() -> {
 
 모든 파일, 템플릿, SDK 요청은 UTF-8 인코딩을 사용합니다.
 
-### Windows-Only Limitation
+### Windows-Only Runtime
 
-ViplexCore SDK는 Windows 64bit 전용입니다.
+검증한 ViplexCore SDK 런타임은 Windows x64용입니다. 소스 빌드와 네이티브 SDK를 호출하지 않는 테스트는 다른 운영체제에서도 가능하지만, 실제 애플리케이션과 Taurus 장비 연동은 Windows x64에서 수행해야 합니다.
 
 ### Application Data Location
 
@@ -168,8 +171,14 @@ C:\Users\(사용자명)\TaurusControl\
 - 프로그램 생성 정보
 
 **디버깅 팁**:
-- 로그 파일 확인: `C:\Users\tjdak\TaurusControl\temp\log\*.log`
+- 로그 파일 확인: `C:\Users\(사용자명)\TaurusControl\temp\log\*.log`
 - 데이터 초기화: 위 폴더 전체 삭제 후 재실행
+
+### Current Limitations
+
+- 고객 현장 배포와 장기 운영 환경에서는 검증하지 않았습니다.
+- 현재 콜백 대기 방식은 전역 상태와 폴링에 의존합니다. 요청별 timeout과 독립적인 완료 상태를 갖는 구조로 개선할 여지가 있습니다.
+- T-SDK 최신 버전과 특정 Windows 버전별 호환성은 검증하지 않았습니다.
 
 ---
 

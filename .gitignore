@@ -35,6 +35,14 @@ out/
 /temp
 *.txt
 
+# NovaStar T-SDK is downloaded separately and must not be committed.
+/sdk/
+/src/main/resources/win32-x86-64/
+
+# Keep only the placeholder configuration in Git.
+/config/credentials.json
+/src/main/resources/templates/credentials.json
+
 ### Gradle ###
 .gradle/
 build/

@@ -8,6 +8,17 @@ plugins {
 group = 'tauruscontrol'
 version = '1.0.0'
 
+def sdkPathProperty = 'tauruscontrol.sdk.path'
+def sdkPathEnvironmentVariable = 'TAURUSCONTROL_SDK_PATH'
+def configuredSdkDirectory = providers.systemProperty(sdkPathProperty)
+        .orElse(providers.environmentVariable(sdkPathEnvironmentVariable))
+        .orElse(layout.projectDirectory.dir('sdk/win32-x86-64').asFile.absolutePath)
+def credentialsPathProperty = 'tauruscontrol.credentials.path'
+def credentialsPathEnvironmentVariable = 'TAURUSCONTROL_CREDENTIALS_PATH'
+def configuredCredentialsPath = providers.systemProperty(credentialsPathProperty)
+        .orElse(providers.environmentVariable(credentialsPathEnvironmentVariable))
+        .orElse(layout.projectDirectory.file('config/credentials.json').asFile.absolutePath)
+
 repositories {
     mavenCentral()
 }
@@ -44,6 +55,13 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(JavaExec) {
     systemProperty 'file.encoding', 'UTF-8'
+    systemProperty sdkPathProperty, configuredSdkDirectory.get()
+    systemProperty credentialsPathProperty, configuredCredentialsPath.get()
+}
+
+processResources {
+    exclude 'win32-x86-64/**'
+    exclude 'templates/credentials.json'
 }
 
 test {
@@ -88,13 +106,25 @@ jlink {
     }
 }
 
-// jpackageImage가 끝난 후 SDK DLL 파일들을 app/native 폴더로 복사
+// jpackageImage가 끝난 후 로컬에 설치한 SDK 런타임을 app/native 폴더로 복사
 tasks.named('jpackageImage') {
+    doFirst {
+        File sdkDirectory = file(configuredSdkDirectory.get())
+        File coreLibrary = new File(sdkDirectory, 'viplexcore.dll')
+        if (!coreLibrary.isFile()) {
+            throw new GradleException(
+                    "NovaStar T-SDK 런타임을 찾을 수 없습니다: ${coreLibrary}. " +
+                            "-D${sdkPathProperty}=<path> 또는 ${sdkPathEnvironmentVariable}로 " +
+                            "T-SDK 3.6.3.0101 Windows x64 경로를 지정하세요."
+            )
+        }
+    }
+
     doLast {
         copy {
-            from 'src/main/resources/win32-x86-64'
+            from configuredSdkDirectory
             into "$buildDir/jpackage/TaurusControl/app/native"
-            include '*.dll'
+            exclude 'apitestcases/**'
         }
     }
 }
